@@ -36,6 +36,16 @@ on:
       npm-token:
         required: false
         description: 'If an NPM_TOKEN env var is required for build then add it here'
+    outputs:
+      image-name:
+        description: 'The full registry and path of the built image'
+        value: ${{ jobs.build-image.outputs.image-name }}
+      image-tag:
+        description: 'The image tag applied to the built image'
+        value: ${{ jobs.build-image.outputs.image-tag }}
+      branch:
+        description: 'The branch name for which the workflow ran'
+        value: ${{ jobs.build-image.outputs.branch }}
 
 jobs:
   build-image:
