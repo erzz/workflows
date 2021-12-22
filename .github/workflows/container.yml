@@ -16,6 +16,11 @@ on:
         required: false
         type: string
         description: 'Comma separated list of environment variables to pass as build args'
+      env-file:
+        required: false
+        type: boolean
+        description: 'If there is an .env file to include set to true - expects an artifact named env-file'
+        default: false
     secrets:
       user:
         required: false
@@ -34,6 +39,12 @@ jobs:
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v3.x
+      
+      - name: Include .env file
+        if: ${{ inputs.env-file }}
+        uses: actions/download-artifact@v2
+        with:
+          name: env-file
 
       - name: Build & Push Image
         id: build-image
