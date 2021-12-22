@@ -26,6 +26,11 @@ on:
         type: string
         description: 'The comma separated list of the scan types to perform (no spaces!)'
         default: 'os,library'
+      include-tests:
+        required: false
+        type: boolean
+        description: 'Set to false in order to skip the tests and only run the build & push job'
+        default: true
     secrets:
       user:
         required: false
@@ -85,6 +90,7 @@ jobs:
   hadolint:
     name: Dockerfile Lint
     runs-on: ubuntu-latest
+    if: ${{ inputs.include-tests }}
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
@@ -95,6 +101,7 @@ jobs:
   trivy:
     name: Trivy Image Scan
     runs-on: ubuntu-latest
+    if: ${{ inputs.include-tests }}
     needs: build-image
     steps:
       # Checkout required for upload step's git context
@@ -119,6 +126,7 @@ jobs:
   dockle:
     name: Dockle Container Analysis
     runs-on: ubuntu-latest
+    if: ${{ inputs.include-tests }}
     needs: build-image
     steps:
       - name: Checkout Source
