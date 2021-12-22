@@ -1,0 +1,46 @@
+name: Build & Scan Container Image
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        required: false
+        type: string
+        description: 'The domain name of the registry to push the built image to'
+        default: 'eu.gcr.io'
+      image:
+        required: true
+        type: string
+        description: 'The path under which to create the image'
+      build-args:
+        required: false
+        type: string
+        description: 'Comma separated list of environment variables to pass as build args'
+    secrets:
+      user:
+        required: false
+        description: 'The username to use when authenticating with the registry'
+      password:
+        required: false
+        description: 'The password to use when authenticating with the registry'
+
+jobs:
+  build:
+    name: Build and Push Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Build & Push Image
+        id: build-image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ${{ inputs.image }}
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.user }}
+          password: ${{ secrets.password }}
+          buildArgs: ${{ inputs.build-args }}
