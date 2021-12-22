@@ -72,8 +72,17 @@ jobs:
           password: ${{ secrets.password }}
           buildArgs: ${{ inputs.build-args }}
 
-  # <-------------------- IMAGE-SCAN --------------------->
-  image-scan:
+  hadolint:
+    name: Dockerfile Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v1.6.0
+
+  trivy:
     name: Trivy Image Scan
     runs-on: ubuntu-latest
     needs: build-image
@@ -96,3 +105,32 @@ jobs:
           ignore-unfixed: true
           exit-code: 1
           severity: 'HIGH,CRITICAL'
+
+  dockle:
+    name: Dockle Container Analysis
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.password }}
+
+      - name: Run Dockle
+        uses: erzz/dockle-action@v1.1.1
+        with:
+          image: ${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}
+          exit-code: 1
+          failure-threshold: WARN
+          accept-extensions: pem,key
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Dockle Report
+          path: dockle-report.json
