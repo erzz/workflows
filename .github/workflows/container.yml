@@ -28,6 +28,9 @@ on:
       password:
         required: false
         description: 'The password to use when authenticating with the registry'
+      npm-token:
+        required: false
+        description: 'If an NPM_TOKEN env var is required for build then add it here'
 
 jobs:
   build:
@@ -45,6 +48,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: env-file
+
+      - name: Export variables
+        run: |
+          echo "NPM_TOKEN=${{ secrets.npm-token }}" >> $GITHUB_ENV
 
       - name: Build & Push Image
         id: build-image
