@@ -21,6 +21,11 @@ on:
         type: boolean
         description: 'If there is an .env file to include set to true - expects an artifact named env-file'
         default: false
+      trivy-scan-type:
+        required: false
+        type: string
+        description: 'The comma separated list of the scan types to perform (no spaces!)'
+        default: 'os,library'
     secrets:
       user:
         required: false
@@ -33,9 +38,13 @@ on:
         description: 'If an NPM_TOKEN env var is required for build then add it here'
 
 jobs:
-  build:
+  build-image:
     name: Build and Push Image
     runs-on: ubuntu-latest
+    outputs:
+      image-name: ${{ steps.build-image.outputs.imageFullName }}
+      image-tag: ${{ steps.build-image.outputs.tags }}
+      branch: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -62,3 +71,28 @@ jobs:
           username: ${{ secrets.user }}
           password: ${{ secrets.password }}
           buildArgs: ${{ inputs.build-args }}
+
+  # <-------------------- IMAGE-SCAN --------------------->
+  image-scan:
+    name: Trivy Image Scan
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      # Checkout required for upload step's git context
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.password }}
+
+      - name: Trivy Image Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}
+          vuln-type: ${{ inputs.trivy-scan-type }}
+          ignore-unfixed: true
+          exit-code: 1
+          severity: 'HIGH,CRITICAL'
