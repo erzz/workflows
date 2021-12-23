@@ -53,6 +53,7 @@ on:
         value: ${{ jobs.build-image.outputs.branch }}
 
 jobs:
+  # <--------------------- SOURCE-ONLY ------------------->
   build-image:
     name: Build and Push Image
     runs-on: ubuntu-latest
@@ -97,7 +98,10 @@ jobs:
 
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v1.6.0
+        with:
+          format: tty
 
+  # <------------------- REQUIRES IMAGE ------------------>
   trivy:
     name: Trivy Image Scan
     runs-on: ubuntu-latest
