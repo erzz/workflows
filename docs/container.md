@@ -61,7 +61,7 @@ build:
 ```yaml
 build:
   needs: [env-file]
-  uses: erzz/workflows/.github/workflows/container.yml@v1
+  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
   with:
     registry: "eu.gcr.io"
     image: my-project/my-app
@@ -72,4 +72,19 @@ build:
     user: _json_key
     password: ${{ secrets.SA_JSON_KEY }}
     npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
+```
+
+## Maven container using maven-settings.xml file
+
+```yaml
+jobs:
+  build:
+    uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+    with:
+      image: my-project/my-app
+      mvn-settings: true
+    secrets:
+      user: _json_key
+      password: ${{ secrets.SA_JSON_KEY }}
+      mvn-settings-file: ${{ secrets.MAVEN_SETTINGS_FILE }}
 ```
