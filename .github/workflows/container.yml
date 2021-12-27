@@ -6,50 +6,58 @@ on:
       registry:
         required: false
         type: string
-        description: 'The domain name of the registry to push the built image to'
-        default: 'eu.gcr.io'
+        description: "The domain name of the registry to push the built image to"
+        default: "eu.gcr.io"
       image:
         required: true
         type: string
-        description: 'The path under which to create the image'
+        description: "The path under which to create the image"
       build-args:
         required: false
         type: string
-        description: 'Comma separated list of environment variables to pass as build args'
+        description: "Comma separated list of environment variables to pass as build args"
       env-file:
         required: false
         type: boolean
-        description: 'If there is an .env file to include set to true - expects an artifact named env-file'
+        description: "If there is an .env file to include set to true - expects an artifact named env-file"
+        default: false
+      mvn-settings:
+        required: false
+        type: boolean
+        description: "If there is an maven-settings.xml file to include set to true and use mvn-settings-file to populate"
         default: false
       trivy-scan-type:
         required: false
         type: string
-        description: 'The comma separated list of the scan types to perform (no spaces!)'
-        default: 'os,library'
+        description: "The comma separated list of the scan types to perform (no spaces!)"
+        default: "os,library"
       include-tests:
         required: false
         type: boolean
-        description: 'Set to false in order to skip the tests and only run the build & push job'
+        description: "Set to false in order to skip the tests and only run the build & push job"
         default: true
     secrets:
       user:
         required: false
-        description: 'The username to use when authenticating with the registry'
+        description: "The username to use when authenticating with the registry"
       password:
         required: false
-        description: 'The password to use when authenticating with the registry'
+        description: "The password to use when authenticating with the registry"
       npm-token:
         required: false
-        description: 'If an NPM_TOKEN env var is required for build then add it here'
+        description: "If an NPM_TOKEN env var is required for build then add it here"
+      mvn-settings-file:
+        required: false
+        description: "If a maven settings file is required for build then add it here"
     outputs:
       image-name:
-        description: 'The full registry and path of the built image'
+        description: "The full registry and path of the built image"
         value: ${{ jobs.build-image.outputs.image-name }}
       image-tag:
-        description: 'The image tag applied to the built image'
+        description: "The image tag applied to the built image"
         value: ${{ jobs.build-image.outputs.image-tag }}
       branch:
-        description: 'The branch name for which the workflow ran'
+        description: "The branch name for which the workflow ran"
         value: ${{ jobs.build-image.outputs.branch }}
 
 jobs:
@@ -67,12 +75,21 @@ jobs:
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v3.x
-      
+
       - name: Include .env file
         if: ${{ inputs.env-file }}
         uses: actions/download-artifact@v2
         with:
           name: env-file
+
+      - name: Include maven-settings.xml
+        if: ${{ inputs.mvn-settings }}
+        env:
+          # Hack to handle passing of strings with mixed quotes
+          FILE: ${{ secrets.mvn-settings-file }}
+        run: |
+          echo "Creating maven-settings.xml..."
+          echo "$FILE" > maven-settings.xml
 
       - name: Export variables
         run: |
@@ -125,7 +142,7 @@ jobs:
           vuln-type: ${{ inputs.trivy-scan-type }}
           ignore-unfixed: true
           exit-code: 1
-          severity: 'HIGH,CRITICAL'
+          severity: "HIGH,CRITICAL"
 
   dockle:
     name: Dockle Container Analysis
