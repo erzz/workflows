@@ -17,22 +17,23 @@ Simply include the workflow within your project's workflow using something like
 
 ```yaml
 build:
-    uses: erzz/workflows/.github/workflows/container.yml@v1
-    with:
-      registry: 'eu.gcr.io'
-      image: image-path/image-name
-    secrets:
-      user: _json_key
-      password: ${{ secrets.SA_JSON }}
+  uses: erzz/workflows/.github/workflows/container.yml@v1
+  with:
+    registry: "eu.gcr.io"
+    image: image-path/image-name
+  secrets:
+    user: _json_key
+    password: ${{ secrets.SA_JSON }}
 ```
 
 # Secrets
 
-| Input             | Required | Default        | Details                                                                                             |
-| ----------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
-| `user`            | true     | N/A - REQUIRED | Username to use for authenticating with your target registry                                        |
-| `password`        | true     | N/A - REQUIRED | Password to use for authenticating with your target registry                                        |
-| `npm-token`       | false    | N/A            | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow |
+| Input               | Required | Default        | Details                                                                                             |
+| ------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
+| `user`              | true     | N/A - REQUIRED | Username to use for authenticating with your target registry                                        |
+| `password`          | true     | N/A - REQUIRED | Password to use for authenticating with your target registry                                        |
+| `npm-token`         | false    | N/A            | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow |
+| `mvn-settings-file` | false    | N/A            | If a maven settings file is required, provide the secret and it will be created in the workflow     |
 
 # Inputs
 
@@ -59,16 +60,31 @@ build:
 
 ```yaml
 build:
-    needs: [ env-file ]
-    uses: erzz/workflows/.github/workflows/container.yml@v1
+  needs: [env-file]
+  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+  with:
+    registry: "eu.gcr.io"
+    image: my-project/my-app
+    build-args: NPM_TOKEN
+    env-file: true
+    trivy-scan-type: "os"
+  secrets:
+    user: _json_key
+    password: ${{ secrets.SA_JSON_KEY }}
+    npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
+```
+
+## Maven container using maven-settings.xml file
+
+```yaml
+jobs:
+  build:
+    uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
     with:
-      registry: 'eu.gcr.io'
       image: my-project/my-app
-      build-args: NPM_TOKEN
-      env-file: true
-      trivy-scan-type: 'os'
+      mvn-settings: true
     secrets:
       user: _json_key
       password: ${{ secrets.SA_JSON_KEY }}
-      npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
+      mvn-settings-file: ${{ secrets.MAVEN_SETTINGS_FILE }}
 ```
