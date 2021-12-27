@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/erzz/workflows/compare/v1.0.0...v1.0.1) (2021-12-27)
+
+
+### Bug Fixes
+
+* add handling of maven-settings.xml file for maven projects ([afab263](https://github.com/erzz/workflows/commit/afab263186d09b8ea6ba80f95f69e24176c478f9))
+
 # 1.0.0 (2021-12-23)
 
 
