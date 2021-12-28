@@ -75,7 +75,22 @@ build:
     npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
 ```
 
-## Maven container using maven-settings.xml file
+## Go container using .env file from previous job and skipping the test jobs
+
+```yaml
+build:
+  needs: [ env-file ]
+  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+  with:
+    image: my-project/my-app
+    env-file: true
+    include-tests: false
+  secrets:
+    user: _json_key
+    password: ${{ secrets.SA_JSON_KEY }}
+```
+
+## Maven-built Java container using a maven-settings.xml file
 
 ```yaml
 jobs:
