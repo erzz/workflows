@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       default-config:
-        required: true
+        required: false
         type: boolean
         description: "To use a config you have in your repository already - set to false. Otherwise uses the config in this respository."
         default: true
