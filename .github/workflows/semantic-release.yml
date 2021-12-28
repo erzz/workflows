@@ -1,0 +1,57 @@
+name: Execute Semantic Release
+on:
+  workflow_call:
+    inputs:
+      default-config:
+        required: true
+        type: boolean
+        description: "To use a config you have in your repository already - set to false. Otherwise uses the config in this respository."
+        default: true
+    secrets:
+      token:
+        required: true
+        description: "A secret containing a token with relevant permissions to publish releases"
+    outputs:
+      new_release_published:
+        description: "Whether a new release was published (true or false)"
+        value: ${{ jobs.release.outputs.new_release_published }}
+      new_release_version:
+        description: "Version of the new release"
+        value: ${{ jobs.release.outputs.new_release_version }}
+      new_release_notes:
+        description: "The release notes for the new release"
+        value: ${{ jobs.release.outputs.new_release_notes }}
+
+jobs:
+  # <--------------- RUN SEMANTIC RELEASE ---------------->
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+    outputs:
+      new_release_published: ${{ steps.semantic-release.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic-release.outputs.new_release_version }}
+      new_release_notes: ${{ steps.semantic-release.outputs.new_release_notes }}
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Get Configuration
+        if: ${{ inputs.default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L -o .releaserc.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/semantic-release-config.json || exit 1
+
+      - name: Semantic Release
+        id: seantic-release
+        uses: cycjimmy/semantic-release-action@v2.7.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}
+        with:
+          dry_run: false
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+            conventional-changelog-conventionalcommits
