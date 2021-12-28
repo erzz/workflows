@@ -56,3 +56,18 @@ release:
   secrets:
     token: ${{ secrets.RELEASE_TOKEN }}
 ```
+
+## Maven projects requiring a maven settings file
+
+A special case for us where you **SHOULD** provide your own configuration and specify the maven settings file to use if required.
+
+```yaml
+release:
+  uses: erzz/workflows/.github/workflows/semantic-release.yml@main
+  with:
+    default-config: false
+    mvn-settings: true
+  secrets:
+    token: ${{ secrets.RELEASE_TOKEN }}
+    mvn-settings-file: ${{ secrets.MAVEN_SETTINGS_FILE }}
+```
