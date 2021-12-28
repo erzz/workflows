@@ -26,7 +26,7 @@ build:
     password: ${{ secrets.SA_JSON }}
 ```
 
-# Secrets
+## Secrets
 
 | Input               | Required | Default        | Details                                                                                             |
 | ------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ build:
 | `npm-token`         | false    | N/A            | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow |
 | `mvn-settings-file` | false    | N/A            | If a maven settings file is required provide the secret containing the file                         |
 
-# Inputs
+## Inputs
 
 | Input             | Required | Default        | Details                                                                                            |
 | ----------------- | -------- | -------------- | -------------------------------------------------------------------------------------------------- |
@@ -47,7 +47,7 @@ build:
 | `trivy-scan-type` | false    | `os,library`   | The comma separated list of the scan types to perform (no spaces!)                                 |
 | `include-tests`   | false    | `true`         | Set to false in order to skip the tests and only run the build & push job                          |
 
-# Outputs
+## Outputs
 
 | Output     | Description                                     | Example value                 |
 | ---------- | ----------------------------------------------- | ----------------------------- |
@@ -55,7 +55,7 @@ build:
 | image-tag  | The image tag applied to the built image        | `main-23f1a`                  |
 | branch     | The branch or tag for which the image was built | `main`                        |
 
-# Examples
+# Other Examples
 
 ## NodeJS container using private NPM registry plus a .env file from previous job
 
@@ -79,7 +79,7 @@ build:
 
 ```yaml
 build:
-  needs: [ env-file ]
+  needs: [env-file]
   uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
   with:
     image: my-project/my-app
