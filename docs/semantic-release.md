@@ -6,6 +6,8 @@ This workflow will:
 
 - Analyze your semantic commit git history, and create a semantically versioned release if required (uses [cycjimmy/semantic-release-action@v2.7.0](https://github.com/cycjimmy/semantic-release-action))
 - Provides a [standard configuration](/.github/workflows/semantic-release-config.json) with option to disable and use the config already in your repository.
+- Options to switch to maven version of the job which bumps pom.xml
+- Option for a maven-settings.xml file to be created from a secret for maven projects
 
 # Usage
 
@@ -26,15 +28,17 @@ jobs:
 
 ## Secrets
 
-| Input   | Required | Default        | Details                                                                                             |
-| ------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
-| `token` | true     | N/A - REQUIRED | A secret containing a GITHUB_TOKEN with permissions to create releases, push directly to master etc |
+| Input                 | Required | Default        | Details                                                                                             |
+| --------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
+| `token`               | true     | N/A - REQUIRED | A secret containing a GITHUB_TOKEN with permissions to create releases, push directly to master etc |
+| `maven-settings-file` | false    | N/A - REQUIRED | If a maven settings file is required provide the secret containing the file                         |
 
 ## Inputs
 
-| Input            | Required | Default | Details                                                                                 |
-| ---------------- | -------- | ------- | --------------------------------------------------------------------------------------- |
-| `default-config` | false    | `true`  | If you have your own .releaserc.json already in you project - set this input to `false` |
+| Input            | Required | Default | Details                                                                                        |
+| ---------------- | -------- | ------- | ---------------------------------------------------------------------------------------------- |
+| `default-config` | false    | `true`  | If you have your own .releaserc.json already in you project - set this input to `false`        |
+| `mvn-settings`   | false    | `false` | Should combine with `default-config: false` and special pom.xml updating config will be used   |
 
 ## Outputs
 
@@ -57,9 +61,9 @@ release:
     token: ${{ secrets.RELEASE_TOKEN }}
 ```
 
-## Maven projects requiring a maven settings file
+## Maven projects and using a maven settings file
 
-A special case for us where you **SHOULD** provide your own configuration and specify the maven settings file to use if required.
+With this combination of `mvn-settings: true` and `mvn-settings-file:` a special version of the workflow will run which will give the ability to both set a maven-settings file plus a semantic-release configuration that also updates pom.xml with the newly released version.
 
 ```yaml
 release:
