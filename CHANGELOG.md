@@ -1,3 +1,15 @@
+## [1.1.0](https://github.com/erzz/workflows/compare/v1.0.1...v1.1.0) (2021-12-28)
+
+
+### :sparkles: New Features
+
+* add a semantic release workflow with option to use default configuration ([79a97c4](https://github.com/erzz/workflows/commit/79a97c468e1869cb6f1f3340a723eea525726f31))
+
+
+### :bug: Bug Fixes
+
+* **release:** remove required for inputs.default-config as default is provided ([e23d407](https://github.com/erzz/workflows/commit/e23d407a85b5913991beebb35d5edc00c88db329))
+
 ## [1.0.1](https://github.com/erzz/workflows/compare/v1.0.0...v1.0.1) (2021-12-27)
 
 
