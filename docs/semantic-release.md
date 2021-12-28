@@ -6,8 +6,8 @@ This workflow will:
 
 - Analyze your semantic commit git history, and create a semantically versioned release if required (uses [cycjimmy/semantic-release-action@v2.7.0](https://github.com/cycjimmy/semantic-release-action))
 - Provides a [standard configuration](/.github/workflows/semantic-release-config.json) with option to disable and use the config already in your repository.
-- Options to switch to maven version of the job which bumps pom.xml
-- Option for a maven-settings.xml file to be created from a secret for maven projects
+- Options to switch to [maven version](/.github/workflows/semantic-release-config-mvn.json) of the semantic-release configuration which also updates the version in pom.xml
+- Option for a maven-settings.xml file to be created from a secret
 
 # Usage
 
