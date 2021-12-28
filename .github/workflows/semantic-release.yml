@@ -7,10 +7,18 @@ on:
         type: boolean
         description: "To use a config you have in your repository already - set to false. Otherwise uses the config in this respository."
         default: true
+      mvn-settings:
+        required: false
+        type: boolean
+        description: "If this is a maven project, set to true and disable default-config"
+        default: false
     secrets:
       token:
         required: true
         description: "A secret containing a token with relevant permissions to publish releases"
+      mvn-settings-file:
+        required: false
+        description: "If a maven settings file is required for build then add it here"
     outputs:
       new_release_published:
         description: "Whether a new release was published (true or false)"
@@ -38,14 +46,29 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Include maven-settings.xml
+        if: ${{ inputs.mvn-settings }}
+        env:
+          # Hack to handle passing of strings with mixed quotes
+          FILE: ${{ secrets.mvn-settings-file }}
+        run: |
+          echo "Creating maven-settings.xml..."
+          echo "$FILE" > maven-settings.xml
+
       - name: Get Configuration
         if: ${{ inputs.default-config }}
         run: |
           echo "Fetching default configuration from erzz/workflows..."
           curl -L -o .releaserc.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/semantic-release-config.json || exit 1
 
+      - name: Get MVN Configuration
+        if: ${{ inputs.mvn-settings }}
+        run: |
+          echo "Fetching Maven configuration from erzz/workflows..."
+          curl -L -o .releaserc.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/semantic-release-config-mvn.json || exit 1
+
       - name: Semantic Release
-        id: seantic-release
+        id: semantic-release
         uses: cycjimmy/semantic-release-action@v2.7.0
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
@@ -55,3 +78,4 @@ jobs:
             @semantic-release/changelog
             @semantic-release/git
             conventional-changelog-conventionalcommits
+            @semantic-release/exec
