@@ -1,0 +1,193 @@
+name: Build & Scan Container Image
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        required: false
+        type: string
+        description: "The domain name of the registry to push the built image to"
+        default: "eu.gcr.io"
+      image:
+        required: true
+        type: string
+        description: "The path under which to create the image"
+      build-args:
+        required: false
+        type: string
+        description: "Comma separated list of environment variables to pass as build args"
+      env-file:
+        required: false
+        type: boolean
+        description: "If there is an .env file to include set to true - expects an artifact named env-file"
+        default: false
+      mvn-settings:
+        required: false
+        type: boolean
+        description: "If there is an maven-settings.xml file to include set to true and use mvn-settings-file to populate"
+        default: false
+      trivy-scan-type:
+        required: false
+        type: string
+        description: "The comma separated list of the scan types to perform (no spaces!)"
+        default: "os,library"
+      include-tests:
+        required: false
+        type: boolean
+        description: "Set to false in order to skip the tests and only run the build & push job"
+        default: true
+    secrets:
+      wip:
+        required: true
+        description: "The workload identity provider to use for authentication"
+      service-account:
+        required: true
+        description: "The service account to impersonate via oidc"
+      npm-token:
+        required: false
+        description: "If an NPM_TOKEN env var is required for build then add it here"
+      mvn-settings-file:
+        required: false
+        description: "If a maven settings file is required for build then add it here"
+    outputs:
+      image-name:
+        description: "The full registry and path of the built image"
+        value: ${{ jobs.build-image.outputs.image-name }}
+      image-tag:
+        description: "The image tag applied to the built image"
+        value: ${{ jobs.build-image.outputs.image-tag }}
+      branch:
+        description: "The branch name for which the workflow ran"
+        value: ${{ jobs.build-image.outputs.branch }}
+
+jobs:
+  # <--------------------- SOURCE-ONLY ------------------->
+  build-image:
+    name: Build and Push Image
+    runs-on: ubuntu-latest
+    outputs:
+      image-name: ${{ steps.build-image.outputs.imageFullName }}
+      image-tag: ${{ steps.build-image.outputs.tags }}
+      branch: ${{ env.GITHUB_REF_SLUG_URL }}
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0.4.4
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Include .env file
+        if: ${{ inputs.env-file }}
+        uses: actions/download-artifact@v2
+        with:
+          name: env-file
+
+      - name: Include maven-settings.xml
+        if: ${{ inputs.mvn-settings }}
+        env:
+          # Hack to handle passing of strings with mixed quotes
+          FILE: ${{ secrets.mvn-settings-file }}
+        run: |
+          echo "Creating maven-settings.xml..."
+          echo "$FILE" > maven-settings.xml
+
+      - name: Export variables
+        run: |
+          echo "NPM_TOKEN=${{ secrets.npm-token }}" >> $GITHUB_ENV
+
+      - name: Build & Push Image
+        id: build-image
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ${{ inputs.image }}
+          registry: ${{ inputs.registry }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+          buildArgs: ${{ inputs.build-args }}
+
+  hadolint:
+    name: Dockerfile Lint
+    runs-on: ubuntu-latest
+    if: ${{ inputs.include-tests }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v1.6.0
+        with:
+          format: tty
+
+  # <------------------- REQUIRES IMAGE ------------------>
+  trivy:
+    name: Trivy Image Scan
+    runs-on: ubuntu-latest
+    if: ${{ inputs.include-tests }}
+    needs: build-image
+    steps:
+      # Checkout required for upload step's git context
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0.4.4
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Trivy Image Scan
+        uses: aquasecurity/trivy-action@master
+        env:
+          TRIVY_USERNAME: oauth2accesstoken
+          TRIVY_PASSWORD: ${{ steps.auth.outputs.access_token }}
+        with:
+          image-ref: ${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}
+          vuln-type: ${{ inputs.trivy-scan-type }}
+          ignore-unfixed: true
+          exit-code: 1
+          severity: "HIGH,CRITICAL"
+
+  dockle:
+    name: Dockle Container Analysis
+    runs-on: ubuntu-latest
+    if: ${{ inputs.include-tests }}
+    needs: build-image
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0.4.4
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: GCP Login
+        run: gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+
+      - name: Run Dockle
+        uses: erzz/dockle-action@v1.1.1
+        with:
+          image: ${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}
+          exit-code: 1
+          failure-threshold: WARN
+          accept-extensions: pem,key
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Dockle Report
+          path: dockle-report.json
