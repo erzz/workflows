@@ -13,11 +13,26 @@ This workflow will:
 
 # Usage
 
-Simply include the workflow within your project's workflow using something like
+There are two alternative workflows (due to numerous actions limitaions) depending on which type of authentication you use between Github Actions and GCP.
+
+**Using OIDC Authentication**
 
 ```yaml
 build:
-  uses: erzz/workflows/.github/workflows/container.yml@v1
+  uses: erzz/workflows/.github/workflows/container-oidc.yml@main
+  with:
+    registry: "eu.gcr.io"
+    image: image-path/image-name
+  secrets:
+    wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+    service-account: my-service-account@my-project.iam.gserviceaccount.com
+```
+
+**Using Service Account Key**
+
+```yaml
+build:
+  uses: erzz/workflows/.github/workflows/container.yml@main
   with:
     registry: "eu.gcr.io"
     image: image-path/image-name
@@ -28,12 +43,14 @@ build:
 
 ## Secrets
 
-| Input               | Required | Default        | Details                                                                                             |
-| ------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
-| `user`              | true     | N/A - REQUIRED | Username to use for authenticating with your target registry                                        |
-| `password`          | true     | N/A - REQUIRED | Password to use for authenticating with your target registry                                        |
-| `npm-token`         | false    | N/A            | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow |
-| `mvn-settings-file` | false    | N/A            | If a maven settings file is required provide the secret containing the file                         |
+| Input               | Required      | Details                                                                                                |
+| ------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| `wip`               | for OIDC auth | The workload identity provider to use with the **container-oidc.yml** workflow                         |
+| `service-account`   | for OIDC auth | The service account to impersonate when using the **container-oidc.yml** workflow                      |
+| `user`              | for SA auth   | Username to use for authenticating with your target registry when using the **container.yml** workflow |
+| `password`          | for SA auth   | Password to use for authenticating with your target registry when using the **container.yml** workflow |
+| `npm-token`         | false         | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
+| `mvn-settings-file` | false         | If a maven settings file is required provide the secret containing the file                            |
 
 ## Inputs
 
@@ -62,7 +79,7 @@ build:
 ```yaml
 build:
   needs: [env-file]
-  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+  uses: erzz/workflows/.github/workflows/container.yml@main
   with:
     registry: "eu.gcr.io"
     image: my-project/my-app
@@ -80,7 +97,7 @@ build:
 ```yaml
 build:
   needs: [env-file]
-  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+  uses: erzz/workflows/.github/workflows/container.yml@main
   with:
     image: my-project/my-app
     env-file: true
@@ -95,7 +112,7 @@ build:
 ```yaml
 jobs:
   build:
-    uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+    uses: erzz/workflows/.github/workflows/container.yml@main
     with:
       image: my-project/my-app
       mvn-settings: true
