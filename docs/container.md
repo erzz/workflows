@@ -79,7 +79,7 @@ build:
 ```yaml
 build:
   needs: [env-file]
-  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+  uses: erzz/workflows/.github/workflows/container.yml@main
   with:
     registry: "eu.gcr.io"
     image: my-project/my-app
@@ -97,7 +97,7 @@ build:
 ```yaml
 build:
   needs: [env-file]
-  uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+  uses: erzz/workflows/.github/workflows/container.yml@main
   with:
     image: my-project/my-app
     env-file: true
@@ -112,7 +112,7 @@ build:
 ```yaml
 jobs:
   build:
-    uses: erzz/workflows/.github/workflows/container.yml@v1.0.1
+    uses: erzz/workflows/.github/workflows/container.yml@main
     with:
       image: my-project/my-app
       mvn-settings: true
