@@ -12,6 +12,11 @@ on:
         required: true
         type: string
         description: "The path under which to create the image"
+      dockerfile:
+        required: false
+        type: string
+        description: "Relative path to the Dockerfile to build from"
+        default: "Dockerfile"
       build-args:
         required: false
         type: string
@@ -101,6 +106,7 @@ jobs:
         with:
           image: ${{ inputs.image }}
           registry: ${{ inputs.registry }}
+          dockerfile: ${{ inputs.dockerfile }}
           username: ${{ secrets.user }}
           password: ${{ secrets.password }}
           buildArgs: ${{ inputs.build-args }}
@@ -117,6 +123,7 @@ jobs:
         uses: hadolint/hadolint-action@v1.6.0
         with:
           format: tty
+          dockerfile: ${{ inputs.dockerfile }}
 
   # <------------------- REQUIRES IMAGE ------------------>
   trivy:
