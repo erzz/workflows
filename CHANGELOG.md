@@ -1,3 +1,17 @@
+## [1.2.0](https://github.com/erzz/workflows/compare/v1.1.0...v1.2.0) (2022-01-01)
+
+
+### :bug: Bug Fixes
+
+* add chore: as releasable for maven projects ([1676dee](https://github.com/erzz/workflows/commit/1676deeca12fd73949490eee5bdd634d3ed09d78))
+* **semantic-release:** handle the maven case with settings file ([1305e4e](https://github.com/erzz/workflows/commit/1305e4e91324978b8f0ecf414788ec58c318c04e))
+
+
+### :sparkles: New Features
+
+* **container:** add support for custom Dockerfile location ([e1dc3f6](https://github.com/erzz/workflows/commit/e1dc3f6d89ae35791030ccad72c5d457d385d51b))
+* **container:** provide oidc version of container workflow ([bbca16e](https://github.com/erzz/workflows/commit/bbca16efcc0ffffb59036ec1dcae805424749d81))
+
 ## [1.1.0](https://github.com/erzz/workflows/compare/v1.0.1...v1.1.0) (2021-12-28)
 
 
