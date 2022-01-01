@@ -47,12 +47,12 @@ on:
         default: "os,library"
     secrets:
       # <------------- REGISTRY CREDENTIALS -------------->
-      user:
-        required: false
-        description: "The username to use when authenticating with the registry"
-      password:
-        required: false
-        description: "The password to use when authenticating with the registry"
+      wip:
+        required: true
+        description: "The workload identity provider to use for authentication"
+      service-account:
+        required: true
+        description: "The service account to impersonate via oidc"
       # <---------------- NPM CREDENTIALS ---------------->
       npm-token:
         required: false
