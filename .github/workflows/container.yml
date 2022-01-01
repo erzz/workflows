@@ -3,6 +3,7 @@ name: Build & Scan Container Image
 on:
   workflow_call:
     inputs:
+      # <----------------- IMAGE OPTIONS ----------------->
       registry:
         required: false
         type: string
@@ -21,36 +22,42 @@ on:
         required: false
         type: string
         description: "Comma separated list of environment variables to pass as build args"
+      # <----------------- MISC OPTIONS ------------------>
       env-file:
         required: false
         type: boolean
         description: "If there is an .env file to include set to true - expects an artifact named env-file"
         default: false
-      mvn-settings:
-        required: false
-        type: boolean
-        description: "If there is an maven-settings.xml file to include set to true and use mvn-settings-file to populate"
-        default: false
-      trivy-scan-type:
-        required: false
-        type: string
-        description: "The comma separated list of the scan types to perform (no spaces!)"
-        default: "os,library"
       include-tests:
         required: false
         type: boolean
         description: "Set to false in order to skip the tests and only run the build & push job"
         default: true
+      # <---------------- MAVEN OPTIONS ------------------>
+      mvn-settings:
+        required: false
+        type: boolean
+        description: "If there is an maven-settings.xml file to include set to true and use mvn-settings-file to populate"
+        default: false
+      # <---------------- TRIVY OPTIONS ------------------>
+      trivy-scan-type:
+        required: false
+        type: string
+        description: "The comma separated list of the scan types to perform (no spaces!)"
+        default: "os,library"
     secrets:
+      # <------------- REGISTRY CREDENTIALS -------------->
       user:
         required: false
         description: "The username to use when authenticating with the registry"
       password:
         required: false
         description: "The password to use when authenticating with the registry"
+      # <---------------- NPM CREDENTIALS ---------------->
       npm-token:
         required: false
         description: "If an NPM_TOKEN env var is required for build then add it here"
+      # <--------------- MAVEN CREDENTIALS --------------->
       mvn-settings-file:
         required: false
         description: "If a maven settings file is required for build then add it here"

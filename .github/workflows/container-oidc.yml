@@ -3,6 +3,7 @@ name: Build & Scan Container Image
 on:
   workflow_call:
     inputs:
+      # <----------------- IMAGE OPTIONS ----------------->
       registry:
         required: false
         type: string
@@ -12,40 +13,51 @@ on:
         required: true
         type: string
         description: "The path under which to create the image"
+      dockerfile:
+        required: false
+        type: string
+        description: "Relative path to the Dockerfile to build from"
+        default: "Dockerfile"
       build-args:
         required: false
         type: string
         description: "Comma separated list of environment variables to pass as build args"
+      # <----------------- MISC OPTIONS ------------------>
       env-file:
         required: false
         type: boolean
         description: "If there is an .env file to include set to true - expects an artifact named env-file"
         default: false
-      mvn-settings:
-        required: false
-        type: boolean
-        description: "If there is an maven-settings.xml file to include set to true and use mvn-settings-file to populate"
-        default: false
-      trivy-scan-type:
-        required: false
-        type: string
-        description: "The comma separated list of the scan types to perform (no spaces!)"
-        default: "os,library"
       include-tests:
         required: false
         type: boolean
         description: "Set to false in order to skip the tests and only run the build & push job"
         default: true
+      # <---------------- MAVEN OPTIONS ------------------>
+      mvn-settings:
+        required: false
+        type: boolean
+        description: "If there is an maven-settings.xml file to include set to true and use mvn-settings-file to populate"
+        default: false
+      # <---------------- TRIVY OPTIONS ------------------>
+      trivy-scan-type:
+        required: false
+        type: string
+        description: "The comma separated list of the scan types to perform (no spaces!)"
+        default: "os,library"
     secrets:
-      wip:
-        required: true
-        description: "The workload identity provider to use for authentication"
-      service-account:
-        required: true
-        description: "The service account to impersonate via oidc"
+      # <------------- REGISTRY CREDENTIALS -------------->
+      user:
+        required: false
+        description: "The username to use when authenticating with the registry"
+      password:
+        required: false
+        description: "The password to use when authenticating with the registry"
+      # <---------------- NPM CREDENTIALS ---------------->
       npm-token:
         required: false
         description: "If an NPM_TOKEN env var is required for build then add it here"
+      # <--------------- MAVEN CREDENTIALS --------------->
       mvn-settings-file:
         required: false
         description: "If a maven settings file is required for build then add it here"
@@ -109,6 +121,7 @@ jobs:
         with:
           image: ${{ inputs.image }}
           registry: ${{ inputs.registry }}
+          dockerfile: ${{ inputs.dockerfile }}
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
           buildArgs: ${{ inputs.build-args }}
@@ -125,6 +138,7 @@ jobs:
         uses: hadolint/hadolint-action@v1.6.0
         with:
           format: tty
+          dockerfile: ${{ inputs.dockerfile }}
 
   # <------------------- REQUIRES IMAGE ------------------>
   trivy:
