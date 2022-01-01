@@ -86,7 +86,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Slugify github variables
-        uses: rlespinasse/github-slug-action@v3.x
+        uses: rlespinasse/github-slug-action@v4
 
       - name: Authenticate to GCP
         id: auth
