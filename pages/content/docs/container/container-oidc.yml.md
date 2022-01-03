@@ -1,19 +1,13 @@
-# Container Worflow
+---
+title: "container-oidc.yml"
+weight: 3
+description: >
+  Build, push and scan images.
+---
 
-![Container Workflow](/media/container.png)
+## Usage
 
-This workflow will:
-
-- Build your container image (uses [mr-smithers-excellent/docker-build-push@v5](https://github.com/mr-smithers-excellent/docker-build-push))
-- Automatic git-ops-like tags (uses [mr-smithers-excellent/docker-build-push@v5](https://github.com/mr-smithers-excellent/docker-build-push))
-- Push to a registry of your choice (uses [mr-smithers-excellent/docker-build-push@v5](https://github.com/mr-smithers-excellent/docker-build-push))
-- Scan image with Trivy for dependency and OS vulnerabilites (uses [aquasecurity/trivy-action@master](https://github.com/aquasecurity/trivy-action))
-- Lint the Dockerfile with Hadolint (uses [hadolint/hadolint-action@v1.6.0](https://github.com/hadolint/hadolint-action))
-- Test against best practices using Dockle (uses [erzz/dockle-action@v1.1.1](https://github.com/erzz/dockle-action))
-
-# Usage
-
-There are two alternative workflows (due to numerous actions limitaions) depending on which type of authentication you use between Github Actions and GCP.
+There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use Basic or Service Account authentication then see [container.yml](/docs/container/container.yml/)
 
 **Using OIDC Authentication**
 
@@ -26,19 +20,6 @@ build:
   secrets:
     wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
     service-account: my-service-account@my-project.iam.gserviceaccount.com
-```
-
-**Using Service Account Key**
-
-```yaml
-build:
-  uses: erzz/workflows/.github/workflows/container.yml@main
-  with:
-    registry: "eu.gcr.io"
-    image: image-path/image-name
-  secrets:
-    user: _json_key
-    password: ${{ secrets.SA_JSON }}
 ```
 
 ## Secrets
@@ -54,19 +35,28 @@ build:
 
 ## Inputs
 
-<script src="https://emgithub.com/embed.js?target=https%3A%2F%2Fgithub.com%2Ferzz%2Fworkflows%2Fblob%2F05a428ff48554c286a6192a44e60a4ab727fc0b3%2F.github%2Fworkflows%2Fcontainer.yml%23L6-L47&style=github&showBorder=on&showLineNumbers=on"></script>
+| Input             | Required | Default        | Details                                                                                            |
+| ----------------- | -------- | -------------- | -------------------------------------------------------------------------------------------------- |
+| `image`           | true     | N/A - REQUIRED | The path and image name to create e.g. `my-project/myapp` Note: tags will be automatically created |
+| `registry`        | false    | `eu.gcr.io`    | The domain name of the registry to push the built image to                                         |
+| `dockerfile`      | false    | `Dockerfile`   | Relative path to the Dockerfile to build from                                                      |
+| `build-args`      | false    | N/A            | Comma separated list of environment variables to pass as build args                                |
+| `env-file`        | false    | `false`        | If there is an `.env` file to include set to true - expects an artifact named env-file             |
+| `mvn-settings`    | false    | `false`        | Set to true in combination with the mvn-settings-file secret if a maven settings file is required  |
+| `trivy-scan-type` | false    | `os,library`   | The comma separated list of the scan types to perform (no spaces!)                                 |
+| `include-tests`   | false    | `true`         | Set to false in order to skip the tests and only run the build & push job                          |
 
 ## Outputs
 
-| Output     | Description                                     | Example value                 |
-| ---------- | ----------------------------------------------- | ----------------------------- |
-| image-name | The full registry and path of the built image   | `eu.gcr.io/my-project/my-app` |
-| image-tag  | The image tag applied to the built image        | `main-23f1a`                  |
-| branch     | The branch or tag for which the image was built | `main`                        |
+| Output       | Description                                     | Example value                 |
+| ------------ | ----------------------------------------------- | ----------------------------- |
+| `image-name` | The full registry and path of the built image   | `eu.gcr.io/my-project/my-app` |
+| `image-tag`  | The image tag applied to the built image        | `main-23f1a`                  |
+| `branch`     | The branch or tag for which the image was built | `main`                        |
 
-# Other Examples
+## Other Examples
 
-## Using a Dockerfile that is not at repository root
+### Using a Dockerfile that is not at repository root
 
 ```yaml
 build:
@@ -80,7 +70,7 @@ build:
     password: ${{ secrets.SA_JSON_KEY }}
 ```
 
-## NodeJS container using private NPM registry plus a .env file from previous job
+### NodeJS container using private NPM registry plus a .env file from previous job
 
 ```yaml
 build:
@@ -98,7 +88,7 @@ build:
     npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
 ```
 
-## Go container using .env file from previous job and skipping the test jobs
+### Go container using .env file from previous job and skipping the test jobs
 
 ```yaml
 build:
@@ -113,7 +103,7 @@ build:
     password: ${{ secrets.SA_JSON_KEY }}
 ```
 
-## Maven-built Java container using a maven-settings.xml file
+### Maven-built Java container using a maven-settings.xml file
 
 ```yaml
 jobs:
