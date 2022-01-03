@@ -1,4 +1,4 @@
-baseURL = "https://example.com/"
+baseURL = "https://erzz.github.io/workflows/"
 title = "erzz/workflows"
 enableRobotsTXT = true
 # this example loads the theme as hugo module
