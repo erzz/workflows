@@ -2,7 +2,7 @@
 
 ## Usage
 
-There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use OIDC authentication then see [container-oidc.yml](/docs/container/container-oidc.yml/)
+There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use OIDC authentication then see [container-oidc.yml](/container/container-oidc.md)
 
 **Using Service Account Key**
 
