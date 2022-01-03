@@ -1,10 +1,10 @@
 <!doctype html><html lang=en class=dark>
 <head><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.91.2">
-<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
-<link rel=manifest href=/site.webmanifest>
+<link rel=apple-touch-icon sizes=180x180 href=../../../apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=../../../favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=../../../favicon-16x16.png>
+<link rel=manifest href=../../../site.webmanifest>
 <title>container.yml | erzz/workflows</title><meta property="og:title" content="container.yml">
 <meta property="og:description" content="Build, push and scan images.
 ">
@@ -27,7 +27,7 @@
 <body class=page-page id=pagetop>
 <header class=nav_header>
 <nav class="wrap nav menu">
-<a href=https://erzz.github.io/workflows/ class=nav_brand>
+<a href=https://erzz.github.io/workflows class=nav_brand>
 <picture data-lit=https://erzz.github.io/workflows/images/logo.png data-dark=https://erzz.github.io/workflows/images/logo.png>
 <source srcset=https://erzz.github.io/workflows/images/logo.png media="(prefers-color-scheme: dark)">
 <img srcset=https://erzz.github.io/workflows/images/logo.png alt="erzz/workflows Logo">
@@ -131,7 +131,7 @@
 </aside>
 <main class=content>
 <h1>container.yml</h1><h2 id=usage>Usage</h2>
-<p>There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use OIDC authentication then see <a href=/docs/container/container-oidc.yml/>container-oidc.yml</a></p>
+<p>There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use OIDC authentication then see <a href=../../../docs/container/container-oidc.yml/>container-oidc.yml</a></p>
 <p><strong>Using Service Account Key</strong></p>
 <div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=ln>1</span><span class=nt>build</span><span class=p>:</span><span class=w>
 </span><span class=ln>2</span><span class=w>  </span><span class=nt>uses</span><span class=p>:</span><span class=w> </span><span class=l>erzz/workflows/.github/workflows/container.yml@main</span><span class=w>
