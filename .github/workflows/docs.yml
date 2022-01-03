@@ -21,11 +21,11 @@ jobs:
           extended: true
 
       - name: Build
-        run: cd pages && hugo --minify
+        run: cd pages && hugo
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
+        #if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./pages/public
