@@ -1,15 +1,6 @@
-# Semantic Release
+# Semantic Release Workflow
 
-![Semantic-Release Workflow](/media/semantic-release.png)
-
-This workflow will:
-
-- Analyze your semantic commit git history, and create a semantically versioned release if required (uses [cycjimmy/semantic-release-action@v2.7.0](https://github.com/cycjimmy/semantic-release-action))
-- Provides a [standard configuration](/.github/workflows/semantic-release-config.json) with option to disable and use the config already in your repository.
-- Options to switch to [maven version](/.github/workflows/semantic-release-config-mvn.json) of the semantic-release configuration which also updates the version in pom.xml
-- Option for a maven-settings.xml file to be created from a secret
-
-# Usage
+## Usage
 
 Simply include the workflow within your project's workflow using something like the following.
 
@@ -18,7 +9,6 @@ Simply include the workflow within your project's workflow using something like 
 ```yaml
 name: Release
 on: workflow_dispatch
-
 jobs:
   release:
     uses: erzz/workflows/.github/workflows/semantic-release.yml@main
@@ -48,9 +38,9 @@ jobs:
 | new_release_version   | The version given to the release if created                | `v1.2.0`                               |
 | new_release_notes     | The contents of the release notes if a release was created | The full markdown of the release notes |
 
-# Other Examples
+## Other Examples
 
-## Run the job with a configuration already in your repo
+### Run the job with a configuration already in your repo
 
 ```yaml
 release:
@@ -61,7 +51,7 @@ release:
     token: ${{ secrets.RELEASE_TOKEN }}
 ```
 
-## Maven projects and using a maven settings file
+### Maven projects and using a maven settings file
 
 With this combination of `mvn-settings: true` and `mvn-settings-file:` a special version of the workflow will run which will give the ability to both set a maven-settings file plus a semantic-release configuration that also updates pom.xml with the newly released version.
 
