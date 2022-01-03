@@ -2,15 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Container Workflows on erzz/workflows</title>
-    <link>https://erzz.github.io/workflows/docs/container/</link>
+    <link>https://erzz.github.io/docs/container/</link>
     <description>Recent content in Container Workflows on erzz/workflows</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="https://erzz.github.io/workflows/docs/container/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="https://erzz.github.io/docs/container/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>container.yml</title>
-      <link>https://erzz.github.io/workflows/docs/container/container.yml/</link>
+      <link>https://erzz.github.io/docs/container/container.yml/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://erzz.github.io/workflows/docs/container/container.yml/</guid>
+      <guid>https://erzz.github.io/docs/container/container.yml/</guid>
       <description>Usage There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use OIDC authentication then see container-oidc.yml
 Using Service Account Key
 1build:2uses:erzz/workflows/.github/workflows/container.yml@main3with:4registry:&amp;#34;eu.gcr.io&amp;#34;5image:image-path/image-name6secrets:7user:_json_key8password:${{ secrets.SA_JSON }}Secrets    Input Required Details     wip for OIDC auth The workload identity provider to use with the container-oidc.yml workflow   service-account for OIDC auth The service account to impersonate when using the container-oidc.</description>
@@ -18,10 +18,10 @@ Using Service Account Key
     
     <item>
       <title>container-oidc.yml</title>
-      <link>https://erzz.github.io/workflows/docs/container/container-oidc.yml/</link>
+      <link>https://erzz.github.io/docs/container/container-oidc.yml/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://erzz.github.io/workflows/docs/container/container-oidc.yml/</guid>
+      <guid>https://erzz.github.io/docs/container/container-oidc.yml/</guid>
       <description>Usage There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use Basic or Service Account authentication then see container.yml
 Using OIDC Authentication
 1build:2uses:erzz/workflows/.github/workflows/container-oidc.yml@main3with:4registry:&amp;#34;eu.gcr.io&amp;#34;5image:image-path/image-name6secrets:7wip:projects/012345678901/locations/global/workloadIdentityPools/github/providers/github8service-account:my-service-account@my-project.iam.gserviceaccount.comSecrets    Input Required Details     wip for OIDC auth The workload identity provider to use with the container-oidc.yml workflow   service-account for OIDC auth The service account to impersonate when using the container-oidc.</description>
