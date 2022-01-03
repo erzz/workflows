@@ -2,7 +2,7 @@
 
 ## Usage
 
-There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use Basic or Service Account authentication then see [container.yml](/docs/container/container.yml/)
+There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use Basic or Service Account authentication then see [container.yml](/container/container.md)
 
 **Using OIDC Authentication**
 
@@ -16,6 +16,8 @@ build:
     wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
     service-account: my-service-account@my-project.iam.gserviceaccount.com
 ```
+
+!> Ensure that you have actually set up and configured OIDC authentication between Github and GCP first!
 
 ## Secrets
 
