@@ -1,0 +1,88 @@
+name: Source Protection
+on:
+  workflow_call:
+    inputs:
+      # <---------- CREDENTIAL SCANNING OPTIONS ---------->
+      creds-scan-directory:
+        required: false
+        type: string
+        description: "Defaults to the repository root - specify your own path if required."
+        default: ''
+      creds-fail-build:
+        required: false
+        type: boolean
+        description: "Defaults to failing the job if tests do not pass. Set to false for the opposite (yet not recommended!) behaviour"
+        default: true
+      creds-fetch-depth:
+        required: false
+        type: string
+        description: "How many commits to fetch from the repo. Set to 0 for all (slow!) - but at least a minimum of 2"
+        default: '50'
+      creds-gitleaks-config:
+        required: false
+        type: string
+        description: "Path to a custom gitleaks config if required"
+        default: '.gitleaks.toml'
+      # <-------------- COMMIT LINT OPTIONS -------------->
+      commits-default-config:
+        required: false
+        type: boolean
+        description: "This workflow provides a commit lint config based on conventional commits. Set to false to use your own"
+        default: true
+      commits-config-file:
+        required: false
+        type: string
+        description: "Relative path to your own configuration for commit lint if not using the default."
+        default: '.commitlint.config.js'
+      commits-fail-build:
+        required: false
+        type: boolean
+        description: "Set to false if you do not want commit lint to fail on warnings"
+        default: true
+jobs:
+  # <-------- STATIC TOKEN & CREDENTIAL SCANNER ---------->
+  stacs:
+    name: STACS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: STACS CI
+        uses: stacscan/stacs-ci@0.1.1
+        with:
+          scan-directory: ${{ inputs.creds-scan-directory }}
+          fail-build: ${{ inputs.creds-fail-build }}
+
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: ${{ inputs.creds-fetch-depth }}
+
+      - name: gitleaks
+        uses: zricethezav/gitleaks-action@master
+        with:
+          config-path: ${{ inputs.creds.gitleaks.config }}
+
+  # <---------- VALIDATE CONVENTIONAL COMMITS ------------>
+  commit-lint:
+    name: Commit Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Get Configuration
+        if: ${{ inputs.commits-default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L -o .commitlint.config.js https://raw.githubusercontent.com/erzz/workflows/source-protect/.github/workflows/configs/.commitlint.config.js || exit 1
+
+      - uses: wagoid/commitlint-github-action@v4
+        with:
+          configFile: ${{ inputs.commits-config-file }}
+          failOnWarnings: ${{ inputs.commits-fail-build }}
