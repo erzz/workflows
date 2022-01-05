@@ -4,7 +4,7 @@
 
 Simply include the workflow within your project's workflow using something like the following.
 
-**Note:** `on.workflow_dispatch` in this example means you intend to run the workflow manually. You can just as easily add the job into an automated flow instead where the job would run automatically or any other combination of release process.
+?> `on.workflow_dispatch` in this example means you intend to run the workflow manually. You can just as easily add the job into an automated flow instead where the job would run automatically or any other combination of release process.
 
 ```yaml
 name: Release

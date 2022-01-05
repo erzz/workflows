@@ -1,6 +1,6 @@
 <!-- _coverpage.md -->
 
-![logo](img/logo.png)
+![logo](img/erzz-workflows-logo-large.png)
 
 > Reusable workflows to save on copy & paste CI/CD
 
