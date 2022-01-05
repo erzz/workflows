@@ -24,6 +24,11 @@ on:
         description: "Path to a custom gitleaks config if required"
         default: '.gitleaks.toml'
       # <-------------- COMMIT LINT OPTIONS -------------->
+      commits-enable:
+        required: false
+        type: boolean
+        description: "Set to false if you want to disable the commit lint job"
+        default: true
       commits-default-config:
         required: false
         type: boolean
@@ -64,7 +69,7 @@ jobs:
           fetch-depth: ${{ inputs.creds-fetch-depth }}
 
       - name: gitleaks
-        uses: zricethezav/gitleaks-action@master
+        uses: zricethezav/gitleaks-action@v1.6.0
         with:
           config-path: ${{ inputs.creds.gitleaks.config }}
 
@@ -72,6 +77,7 @@ jobs:
   commit-lint:
     name: Commit Lint
     runs-on: ubuntu-latest
+    if: ${{ inputs.commits-enable }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
