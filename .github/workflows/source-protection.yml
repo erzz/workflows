@@ -86,7 +86,7 @@ jobs:
         if: ${{ inputs.commits-default-config }}
         run: |
           echo "Fetching default configuration from erzz/workflows..."
-          curl -L -o .commitlint.config.js https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.commitlint.config.js || exit 1
+          curl -L --fail -o .commitlint.config.js https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.commitlint.config.js || exit 1
 
       - uses: wagoid/commitlint-github-action@v4
         with:
