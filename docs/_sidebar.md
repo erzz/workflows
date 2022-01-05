@@ -11,5 +11,5 @@
 - [Release Workflows](release/README.md)
   - [Use Semantic-Release Workflow](release/release.md)
 
-- [Source Protection](source-protection/README.md)
+- [Source Protection Workflows](source-protection/README.md)
   - [Use Source-Protection Workflow](source-protection/source-protection.md)
