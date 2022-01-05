@@ -1,3 +1,21 @@
+## [1.3.0](https://github.com/erzz/workflows/compare/v1.2.0...v1.3.0) (2022-01-05)
+
+
+### :package: Maintenance
+
+* **deps:** update rlespinasse/github-slug-action action to v4 ([196827c](https://github.com/erzz/workflows/commit/196827c02f1e21949e05653ed4250590854ff073))
+
+
+### :bug: Bug Fixes
+
+* re-add oidc credentials ([28860f1](https://github.com/erzz/workflows/commit/28860f1c2b56abe6dd23f0e620676b60573d930b))
+
+
+### :sparkles: New Features
+
+* add credential scanning and commit linting ([3f67060](https://github.com/erzz/workflows/commit/3f670603a7253f804a2d78b2dd21d9ccc1ed374f))
+* add option to disable commit lint if required ([595d2a8](https://github.com/erzz/workflows/commit/595d2a872d16fdc9d56e7bbb9c95583e943b6893))
+
 ## [1.2.0](https://github.com/erzz/workflows/compare/v1.1.0...v1.2.0) (2022-01-01)
 
 
