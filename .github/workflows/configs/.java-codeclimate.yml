@@ -1,0 +1,84 @@
+---
+version: "2"
+checks:
+  argument-count:
+    config:
+      threshold: 6
+  file-lines:
+    config:
+      threshold: 400
+  method-lines:
+    config:
+      threshold: 35
+  method-count:
+    config:
+      threshold: 25
+plugins:
+  # CSS Compatability & Bug risks
+  csslint:
+    enabled: false
+  # CoffeeScript style
+  coffeelint:
+    enabled: false
+  # Duplication
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  # Javascript complexity & Style
+  eslint:
+    enabled: false
+  fixme:
+    enabled: false
+  # Golang Style
+  gofmt:
+    enabled: false
+  golint:
+    enabled: false
+  # Golang bug risk
+  govet:
+    enabled: false
+  # Node
+  nodesecurity:
+    enabled: false
+  # Python Style
+  pep8:
+    enabled: false
+  radon:
+    enabled: false
+  # Python Style, complexity, security, performance, bug risk and clarity
+  sonar-python:
+    enabled: false
+  # Ruby Style, complexity, security, performance, bug risk and clarity
+  rubocop:
+    enabled: false
+  # Java Style, complexity, security, performance, bug risk and clarity
+  sonar-java:
+    enabled: true
+    config:
+      minimum_severity: minor
+      sonar.exclusions: "**/resources/*.yaml"
+      sonar.java.source: 11
+  # Swift sytle & conventions
+  swiftlint:
+    enabled: false
+exclude_patterns:
+- config/
+- db/
+- dist/
+- features/
+- "**/node_modules/"
+- script/
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- Tests/
+- "**/vendor/"
+- "**/*_test.go"
+- "**/*.d.ts"
+- .mvn/
+- "**/cicd/**"
