@@ -45,10 +45,47 @@ on:
         type: string
         description: "Max number of BLOCKER Code Climate findings allowed"
         default: 0
+      # <------------- POLARIS OPTIONS -------------->
+      polaris-url:
+        required: true
+        type: string
+        description: "Full url of the Polaris server instance"
+      polaris-project-name:
+        required: true
+        type: string
+        description: "The name of the project in Polaris"
+      polaris-low-threshold:
+        required: false
+        type: string
+        description: "Max number of LOW Polaris findings allowed"
+        default: 0
+      polaris-medium-threshold:
+        required: false
+        type: string
+        description: "Max number of MEDIUM Polaris findings allowed"
+        default: 0
+      polaris-high-threshold:
+        required: false
+        type: string
+        description: "Max number of HIGH Polaris findings allowed"
+        default: 0
+      polaris-critical-threshold:
+        required: false
+        type: string
+        description: "Max number of CRITICAL Polaris findings allowed"
+        default: 0
+      polaris-total-threshold:
+        required: false
+        type: string
+        description: "Max number of TOTAL Polaris findings allowed"
+        default: 0
     secrets:
       mvn-settings-file:
         required: false
         description: "If a maven settings file is required for build then add it here"
+      polaris-access-token:
+        required: true
+        description: "A secret containing your Polaris access token"
 
 jobs:
   # <------------------- CODE QUALITY -------------------->
@@ -85,50 +122,54 @@ jobs:
             codeclimate-report.json
             codeclimate-report.html
 
-  # # <------------------- SAST POLARIS -------------------->
-  # sast:
-  #   name: Polaris SAST
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     POLARIS_URL: https://ikea.polaris.synopsys.com
-  #     POLARIS_ACCESS_TOKEN: ${{ secrets.POLARIS_ACCESS_TOKEN }}
-  #   steps:
-  #     - name: Checkout Source
-  #       uses: actions/checkout@v2
+  # <------------------- SAST POLARIS -------------------->
+  sast:
+    name: Polaris SAST
+    runs-on: ubuntu-latest
+    env:
+      POLARIS_URL: ${{ inputs.polaris-url }}
+      POLARIS_ACCESS_TOKEN: ${{ secrets.polaris-access-token }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
 
-  #     - name: Slugify github variables
-  #       uses: rlespinasse/github-slug-action@v3.x
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v3.x
 
-  #     - name: Add Maven Settings
-  #       env:
-  #         MAVEN_SETTINGS_FILE: ${{ secrets.MAVEN_SETTINGS_FILE }}
-  #       run: |
-  #         echo "$MAVEN_SETTINGS_FILE" > maven-settings.xml
-  #     - name: Polaris SAST Scan
-  #       env:
-  #         PROJECT_NAME: ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}
-  #         SEM_VER_REGEX: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
-  #       run: |
-  #         # skip if running as part of a release commit
-  #         if (echo ${{ env.GITHUB_REF_SLUG }} | grep -Eq ${{ env.SEM_VER_REGEX }}); then
-  #           echo "Skipping this job as it was triggered from a release commit" && exit 0
-  #         fi
-  #         # else install and execute
-  #         wget -q "$POLARIS_URL/api/tools/polaris_cli-linux64.zip"
-  #         unzip -j polaris_cli-linux64.zip -d /tmp
-  #         cp .github/polaris/polaris.yml $GITHUB_WORKSPACE/polaris.yml
-  #         /tmp/polaris \
-  #           -s $POLARIS_URL \
-  #           analyze -w
-  #         # Pass / Fail depending on the thresholds
-  #         python3 .github/polaris/polaris-result-analyzer.py --max-total=3 --max-critical=0 --max-high=0 --max-medium=2 --max-low=1
+      - name: Include maven-settings.xml
+        if: ${{ inputs.mvn-settings }}
+        env:
+          # Hack to handle passing of strings with mixed quotes
+          FILE: ${{ secrets.mvn-settings-file }}
+        run: |
+          echo "Creating maven-settings.xml..."
+          echo "$FILE" > maven-settings.xml
+
+      - name: Polaris SAST Scan
+        env:
+          PROJECT_NAME: ${{ inputs.polaris-project-name }}
+          SEM_VER_REGEX: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+        run: |
+          # skip if running as part of a release commit
+          if (echo ${{ env.GITHUB_REF_SLUG }} | grep -Eq ${{ env.SEM_VER_REGEX }}); then
+            echo "Skipping this job as it was triggered from a release commit" && exit 0
+          fi
+          # else install and execute
+          wget -q "$POLARIS_URL/api/tools/polaris_cli-linux64.zip"
+          unzip -j polaris_cli-linux64.zip -d /tmp
+          cp .github/polaris/polaris.yml $GITHUB_WORKSPACE/polaris.yml
+          /tmp/polaris \
+            -s $POLARIS_URL \
+            analyze -w
+          # Pass / Fail depending on the thresholds
+          python3 .github/polaris/polaris-result-analyzer.py --max-total=${{ inputs.polaris-total-threshold }} --max-critical=${{ inputs.polaris-critical-threshold }} --max-high=${{ inputs.polaris-high-threshold }} --max-medium=${{ inputs.polaris-medium-threshold }} --max-low=${{ inputs.polaris-low-threshold }}
       
-  #     - name: Upload scan reports
-  #       if: always()
-  #       uses: actions/upload-artifact@v2.3.1
-  #       with:
-  #         name: Polaris SAST Reports
-  #         path: .synopsys/polaris/cli-scan.json
+      - name: Upload scan reports
+        if: always()
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: Polaris SAST Reports
+          path: .synopsys/polaris/cli-scan.json
 
   # # <------------------- UNIT TESTS --------------------->
   # unit-tests:
