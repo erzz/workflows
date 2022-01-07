@@ -24,7 +24,7 @@ Please refer to the [Docs](https://erzz.github.io/workflows) for each workflow's
 | [source-protection](/.github/workflows/source-protection.yml) | Check commits for credentials and commit conventions | Gitleaks, STACS & CommitLint                              |
 | node-tests                                                    | Coming Soon                                          | Coming Soon                                               |
 | go-tests                                                      | Coming Soon                                          | Coming Soon                                               |
-| [java-tests](/.github/workflows/java-tests.yml)               | Code Quality, Polaris SAST and Unit Tests            | Coming Soon                                               |
+| [java-tests](/.github/workflows/java-tests.yml)               | Test Java Maven project for functionality & quality  | Code Quality, Polaris SAST and Unit Tests                 |
 | deploy-cloud-run                                              | Coming Soon                                          | Coming Soon                                               |
 | deploy-cloud-function                                         | Coming Soon                                          | Coming Soon                                               |
 | terraform-tests                                               | Coming Soon                                          | Coming Soon                                               |
