@@ -1,0 +1,243 @@
+name: Build & Scan Container Image
+
+on:
+  workflow_call:
+    inputs:
+      # <---------------- GENERAL OPTIONS ---------------->
+      mvn-settings:
+        required: false
+        type: boolean
+        description: "If a maven-settings.xml is required this must be set to true along with the secret for its contents"
+        default: true
+      # <------------- CODE CLIMATE OPTIONS -------------->
+      cc-default-config:
+        required: false
+        type: boolean
+        description: "Set to false if you want to use your own .codeclimate.yml config"
+        default: true
+      cc-config-file:
+        required: false
+        type: string
+        description: "Set relative path to your own code climate configuration"
+        default: '.codeclimate.yml'
+      cc-info-threshold:
+        required: false
+        type: string
+        description: "Max number of INFO Code Climate findings allowed"
+        default: 0
+      cc-minor-threshold:
+        required: false
+        type: string
+        description: "Max number of MINOR Code Climate findings allowed"
+        default: 0
+      cc-major-threshold:
+        required: false
+        type: string
+        description: "Max number of MAJOR Code Climate findings allowed"
+        default: 0
+      cc-critical-threshold:
+        required: false
+        type: string
+        description: "Max number of CRITICAL Code Climate findings allowed"
+        default: 0
+      cc-blocker-threshold:
+        required: false
+        type: string
+        description: "Max number of BLOCKER Code Climate findings allowed"
+        default: 0
+      # <--------------- POLARIS OPTIONS ----------------->
+      polaris-url:
+        required: true
+        type: string
+        description: "Full url of the Polaris server instance"
+      polaris-project-name:
+        required: true
+        type: string
+        description: "The name of the project in Polaris"
+      polaris-low-threshold:
+        required: false
+        type: string
+        description: "Max number of LOW Polaris findings allowed"
+        default: 0
+      polaris-medium-threshold:
+        required: false
+        type: string
+        description: "Max number of MEDIUM Polaris findings allowed"
+        default: 0
+      polaris-high-threshold:
+        required: false
+        type: string
+        description: "Max number of HIGH Polaris findings allowed"
+        default: 0
+      polaris-critical-threshold:
+        required: false
+        type: string
+        description: "Max number of CRITICAL Polaris findings allowed"
+        default: 0
+      polaris-total-threshold:
+        required: false
+        type: string
+        description: "Max number of TOTAL Polaris findings allowed"
+        default: 0
+      # <-------------- UNIT-TEST OPTIONS ---------------->
+      gcp-sa-auth:
+        required: false
+        type: boolean
+        description: "If GCP authentication using a service account JSON key is required for any test set to true"
+        default: false
+      gcp-oidc-auth:
+        required: false
+        type: boolean
+        description: "If GCP authentication using OIDC is required for any test set to true"
+        default: false
+      unit-test-command:
+        required: false
+        type: string
+        description: "Override the unit test command with your own if required"
+        default: "./mvnw -s maven-settings.xml test --fail-at-end -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B"
+    secrets:
+      # <------------------ OIDC AUTH -------------------->
+      wip:
+        required: false
+        description: "The workfload identity provider to use for OIDC auth"
+      service-account:
+        required: false
+        description: "The service account to impersonate when using OIDC auth"
+      # <----------------- SA KEY AUTH ------------------->
+      service-account-key:
+        required: false
+        description: "The service account key to use for authentication.ß"
+      # <------------------ MAVEN AUTH ------------------->
+      mvn-settings-file:
+        required: false
+        description: "If a maven settings file is required for build then add it here"
+      # <----------------- POLARIS AUTH ----------------->
+      polaris-access-token:
+        required: true
+        description: "A secret containing your Polaris access token"
+
+jobs:
+  # <------------------- CODE QUALITY -------------------->
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Configuration
+        if: ${{ inputs.cc-default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L --fail -o .codeclimate.yml https://raw.githubusercontent.com/erzz/workflows/java-tests/.github/workflows/configs/.java-codeclimate.yml || exit 1
+
+      - name: Code Climate Standalone
+        uses: erzz/codeclimate-standalone@v0.0.3
+        with:
+          html_report: true
+          config_file: ${{ inputs.cc-config-file }}
+          info_threshold: ${{ inputs.cc-info-threshold }}
+          minor_threshold: ${{ inputs.cc-minor-threshold }}
+          major_threshold: ${{ inputs.cc-major-threshold }}
+          critical_threshold: ${{ inputs.cc-critical-threshold }}
+          blocker_threshold: ${{ inputs.cc-blocker-threshold }}
+
+      - name: Upload Code Climate Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Code Climate Reports
+          path: |
+            codeclimate-report.json
+            codeclimate-report.html
+
+  # <------------------- SAST POLARIS -------------------->
+  sast:
+    name: Polaris SAST
+    runs-on: ubuntu-latest
+    env:
+      POLARIS_URL: ${{ inputs.polaris-url }}
+      POLARIS_ACCESS_TOKEN: ${{ secrets.polaris-access-token }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Include maven-settings.xml
+        if: ${{ inputs.mvn-settings }}
+        env:
+          # Hack to handle passing of strings with mixed quotes
+          FILE: ${{ secrets.mvn-settings-file }}
+        run: |
+          echo "Creating maven-settings.xml..."
+          echo "$FILE" > maven-settings.xml
+
+      - name: Polaris SAST Scan
+        env:
+          PROJECT_NAME: ${{ inputs.polaris-project-name }}
+          SEM_VER_REGEX: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+        run: |
+          # skip if running as part of a release commit
+          if (echo ${{ env.GITHUB_REF_SLUG }} | grep -Eq ${{ env.SEM_VER_REGEX }}); then
+            echo "Skipping this job as it was triggered from a release commit" && exit 0
+          fi
+          # else install and execute
+          wget -q "$POLARIS_URL/api/tools/polaris_cli-linux64.zip"
+          unzip -j polaris_cli-linux64.zip -d /tmp
+          cp .github/polaris/polaris.yml $GITHUB_WORKSPACE/polaris.yml
+          /tmp/polaris \
+            -s $POLARIS_URL \
+            analyze -w
+          # Pass / Fail depending on the thresholds
+          python3 .github/polaris/polaris-result-analyzer.py --max-total=${{ inputs.polaris-total-threshold }} --max-critical=${{ inputs.polaris-critical-threshold }} --max-high=${{ inputs.polaris-high-threshold }} --max-medium=${{ inputs.polaris-medium-threshold }} --max-low=${{ inputs.polaris-low-threshold }}
+      
+      - name: Upload scan reports
+        if: always()
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: Polaris SAST Reports
+          path: .synopsys/polaris/cli-scan.json
+
+  # <------------------- UNIT TESTS --------------------->
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Authenticate to GCP (SA Key)
+        if: ${{ inputs.gcp-sa-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.service-account-key }}
+
+      - name: Authenticate to GCP (OIDC)
+        if: ${{ inputs.gcp-oidc-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Include maven-settings.xml
+        if: ${{ inputs.mvn-settings }}
+        env:
+          # Hack to handle passing of strings with mixed quotes
+          FILE: ${{ secrets.mvn-settings-file }}
+        run: |
+          echo "Creating maven-settings.xml..."
+          echo "$FILE" > maven-settings.xml
+
+      - name: Execute Unit Tests
+        run: ${{ inputs.unit-test-command }}
+
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Unit Test Reports
+          path: |
+            **/target/jacoco/reports/
+            **/target/surefire-reports/TEST-*.xml
