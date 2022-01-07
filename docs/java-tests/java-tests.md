@@ -22,7 +22,7 @@ java-tests:
   uses: erzz/workflows/.github/workflows/java-tests.yml@main
   with:
     polaris-url: https://my-company.polaris.synopsys.com
-    polaris-project-name: retail-pim-api
+    polaris-project-name: my-project
   secrets:
     polaris-access-token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
 ```
@@ -95,7 +95,7 @@ java-tests:
   uses: erzz/workflows/.github/workflows/java-tests.yml@main
   with:
     polaris-url: https://my-company.polaris.synopsys.com
-    polaris-project-name: retail-pim-api
+    polaris-project-name: my-project
     mvn-settings: true
   secrets:
     polaris-access-token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
@@ -109,7 +109,7 @@ java-tests:
   uses: erzz/workflows/.github/workflows/java-tests.yml@main
   with:
     polaris-url: https://my-company.polaris.synopsys.com
-    polaris-project-name: retail-pim-api
+    polaris-project-name: my-project
     gcp-sa-auth: true
   secrets:
     polaris-access-token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
@@ -123,7 +123,7 @@ java-tests:
   uses: erzz/workflows/.github/workflows/java-tests.yml@main
   with:
     polaris-url: https://my-company.polaris.synopsys.com
-    polaris-project-name: retail-pim-api
+    polaris-project-name: my-project
     gcp-oidc-auth: true
   secrets:
     polaris-access-token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
@@ -138,7 +138,7 @@ java-tests:
   uses: erzz/workflows/.github/workflows/java-tests.yml@main
   with:
     polaris-url: https://my-company.polaris.synopsys.com
-    polaris-project-name: retail-pim-api
+    polaris-project-name: my-project
     gcp-oidc-auth: true
     mvn-settings: true
     cc-default-config: false
