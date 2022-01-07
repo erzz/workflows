@@ -159,6 +159,6 @@ java-tests:
     polaris-access-token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
     wip: projects/123456789000/locations/global/workloadIdentityPools/github/providers/github
     service-account: my-ci-service-account@my-project-id.iam.gserviceaccount.com
-    mvn-settings-file:
+    mvn-settings-file: ${{ secrets.MAVEN_SETTINGS_FILE }}
 ```
 
