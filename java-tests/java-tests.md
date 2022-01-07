@@ -154,7 +154,6 @@ java-tests:
     polaris-critical-threshold: 0
     polaris-total-threshold: 16
     unit-test-command: "./mvnw -s maven-settings.xml my-test-target --fail-at-end -B"
-
   secrets:
     polaris-access-token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
     wip: projects/123456789000/locations/global/workloadIdentityPools/github/providers/github
