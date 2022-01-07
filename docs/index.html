@@ -44,11 +44,14 @@
     { 
       startOnLoad: true,
       flowchart:{
-            useMaxWidth:false,
-            htmlLabels:true,
-            //diagramPadding: 12,
-            nodeSpacing: 40
-        }
+        curve: 'cardinal', // basis, linear or cardinal
+        defaultRenderer: 'dagre-d3', // dagre-d3 or dagre-wrapper
+        htmlLabels:true,
+        diagramPadding: 8,
+        nodeSpacing: 40,
+        rankSpacing: 50,
+        useMaxWidth:true
+      }
     }
     );</script>
 </body>
