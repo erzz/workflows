@@ -37,14 +37,14 @@ flowchart LR
     end
     subgraph Optional
       mvn-settings>"maven-settings.xml\n(Secret)"]
-      gcp-sa>"GCP Service Account JSON Key\n(Secret)"]
-      gcp-oidc>"GCP Identity Provider + Service Account\n(Secret)"]
+      gcp-sa>"GCP Service Account\nJSON Key (Secret)"]
+      gcp-oidc>"GCP Identity Provider +\nService Account\n(Secret)"]
     end
   end
   subgraph Jobs
-    code-quality{"Code Climate Standalone"}
+    code-quality{"Code Climate\nStandalone"}
     polaris-sast{"Polaris SAST"}
-    unit-tests{"Custom Unit Tests"}
+    unit-tests{"Custom\nUnit Tests"}
   end
   subgraph Artifacts
     subgraph Code Quality
@@ -59,9 +59,9 @@ flowchart LR
       surefire-xml["Surefire XML reports"]
     end
     subgraph Code Coverage
-      jacoco-html["JaCoCo Coverage HTML"]
-      jacoco-xml["JaCoCo Coverage XML"]
-      jacoco-csv["JaCoCo Coverage CSV"]
+      jacoco-html["JaCoCo HTML"]
+      jacoco-xml["JaCoCo XML"]
+      jacoco-csv["JaCoCo CSV"]
     end
   end
 
