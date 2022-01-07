@@ -22,7 +22,7 @@
       logo: 'img/erzz-workflows-logo-text.png',
       name: 'erzz/workflows',
       repo: 'erzz/workflows',
-      subMaxLevel: 2,
+      subMaxLevel: 3,
     }
   </script>
   <!-- Docsify v4 -->
@@ -40,6 +40,16 @@
   <script src="//unpkg.com/mermaid/dist/mermaid.js"></script>
   <script src="//unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
   <!-- Enable Mermaid Rendering -->
-  <script>mermaid.initialize({ startOnLoad: true });</script>
+  <script>mermaid.initialize(
+    { 
+      startOnLoad: true,
+      flowchart:{
+            useMaxWidth:false,
+            htmlLabels:true,
+            //diagramPadding: 12,
+            nodeSpacing: 40
+        }
+    }
+    );</script>
 </body>
 </html>
