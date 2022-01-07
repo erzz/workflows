@@ -14,29 +14,32 @@
   <div id="app"></div>
   <script>
     window.$docsify = {
+      auto2top: true,
+      autoHeader: true,
+      coverpage: true,
       loadSidebar: true,
       loadNavbar: true,
-      subMaxLevel: 2,
+      logo: 'img/erzz-workflows-logo-text.png',
       name: 'erzz/workflows',
       repo: 'erzz/workflows',
-      coverpage: true
+      subMaxLevel: 2,
     }
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <!-- Additional Syntax Highlighting -->
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-go.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-git.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-go.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javadoc.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
   <!-- Plugins -->
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
   <script src="//unpkg.com/mermaid/dist/mermaid.js"></script>
-  <script src="//unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"> 
-  
+  <script src="//unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
+  <!-- Enable Mermaid Rendering -->
   <script>mermaid.initialize({ startOnLoad: true });</script>
 </body>
 </html>
