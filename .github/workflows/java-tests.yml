@@ -246,5 +246,5 @@ jobs:
         with:
           name: Unit Test Reports
           path: |
-            **/target/jacoco/reports/index.html
+            **/target/jacoco/reports/
             **/target/surefire-reports/TEST-*.xml
