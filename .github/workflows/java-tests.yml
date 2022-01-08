@@ -158,6 +158,7 @@ jobs:
     env:
       POLARIS_URL: ${{ inputs.polaris-url }}
       POLARIS_ACCESS_TOKEN: ${{ secrets.polaris-access-token }}
+      PROJECT_NAME: ${{ inputs.polaris-project-name }}
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
@@ -183,6 +184,10 @@ jobs:
           echo "Fetching Polaris Result Analyzer from erzz/workflows..."
           curl -L --fail -o polaris-result-analyzer.py https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/utils/polaris-result-analyzer.py || exit 1
 
+          # Fetch the Polaris config
+          echo "Fetching polaris.yml from erzz/workflows..."
+          curl -L --fail -o polaris.yml https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/polaris.yml || exit 1
+
           # skip if running as part of a release commit
           if (echo ${{ env.GITHUB_REF_SLUG }} | grep -Eq ${{ env.SEM_VER_REGEX }}); then
             echo "Skipping this job as it was triggered from a release commit" && exit 0
@@ -191,10 +196,7 @@ jobs:
           # else install and execute
           wget -q "$POLARIS_URL/api/tools/polaris_cli-linux64.zip"
           unzip -j polaris_cli-linux64.zip -d /tmp
-          cp .github/polaris/polaris.yml $GITHUB_WORKSPACE/polaris.yml
-          /tmp/polaris \
-            -s $POLARIS_URL \
-            analyze -w
+          /tmp/polaris -s $POLARIS_URL analyze -w
 
           # Pass / Fail depending on the thresholds
           python3 polaris-result-analyzer.py --max-total=${{ inputs.polaris-total-threshold }} --max-critical=${{ inputs.polaris-critical-threshold }} --max-high=${{ inputs.polaris-high-threshold }} --max-medium=${{ inputs.polaris-medium-threshold }} --max-low=${{ inputs.polaris-low-threshold }}
