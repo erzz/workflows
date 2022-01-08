@@ -14,16 +14,48 @@ This workflow will:
 ### Maven Specific
 
 - Options to switch to [maven version](https://github.com/erzz/workflows/blob/main/.github/workflows/configs/semantic-release-config-mvn.json) of the semantic-release configuration which also updates the version in `pom.xml`
-- Option for a maven-settings.xml file to be created from a secret for authenticate maven repos
+- Option for a maven-settings.xml file to be created from a secret for authenticating with maven repos
 
 ## Included Jobs
 
 ```mermaid
 %%{init: {'theme': 'neutral'}}%%
+
 flowchart LR
-  subgraph release
-    semantic-release["Run Semantic Release"]
+  subgraph Pre-Requisites
+    subgraph Mandatory
+      N/A
+    end
+    subgraph Optional
+      mvn-settings>"maven-settings.xml\n(Secret)"]
+      releaserc>".releaserc.json"]
+    end
   end
+  subgraph Jobs
+    semantic-release{"Run Semantic Release"}
+  end
+  subgraph Artifacts
+    subgraph Release
+      gh-release["Github Release"]
+      sem-ver["Semantic Version\nNumber"]
+      rel-notes["Release Notes"]
+    end
+    subgraph Commit to main
+      changelog["CHANGELOG.md"]
+      pom["pom.xml\n(version)"]
+    end
+  end
+
+  %% dependencies -> Jobs
+  mvn-settings-.->semantic-release
+  releaserc-.->semantic-release
+
+  %% Jobs -> Artifacts
+  semantic-release-.->|if_release|gh-release
+  semantic-release-.->|if_release|sem-ver
+  semantic-release-.->|if_release|rel-notes
+  semantic-release-.->|if_release|changelog
+  semantic-release-.->|if_maven|pom
 ```
 
 ### Run Semantic Release

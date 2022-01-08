@@ -15,14 +15,46 @@ This workflow will check your repo for:
 
 ```mermaid
 %%{init: {'theme': 'neutral'}}%%
-flowchart TD
-  subgraph Credential Scanning
-    gitleaks["Run Gitleaks"]
-    stacs["Run STACS"]
+
+flowchart LR
+  subgraph Pre-Requisites
+    subgraph Mandatory
+      N/A
+    end
+    subgraph Optional
+      gitleaks-toml>".gitleaks.toml"]
+      commitlint-js>".commitlint.config.js"]
+    end
   end
-  subgraph Commit-Lint
-    commitlint["Run Commitlint"]
+  subgraph Jobs
+    subgraph Credentials / Secrets
+      gitleaks{"GitLeaks"}
+      stacs{"STACS"}
+    end
+    subgraph Commit Format
+      commitlint{"Commit Lint"}
+    end
   end
+  subgraph Artifacts
+    subgraph Commit Lint
+      commit-lint-tty["TTY"]
+    end
+    subgraph Gitleaks
+      gitleaks-tty["TTY"]
+    end
+    subgraph STACS
+      stacs-tty["TTY"]
+    end
+  end
+
+  %% dependencies -> Jobs
+  gitleaks-toml-.->gitleaks
+  commitlint-js-.->commitlint
+
+  %% Jobs -> Artifacts
+  commitlint--->commit-lint-tty
+  gitleaks--->gitleaks-tty
+  stacs--->stacs-tty
 ```
 
 ### Gitleaks
