@@ -14,16 +14,60 @@ There are two versions of the workflow:
 ```mermaid
 %%{init: {'theme': 'neutral'}}%%
 flowchart LR
-  subgraph build
-    build-image["Build & push \nto Registry"]
-    hadolint["Hadolint"]
+  subgraph Pre-Requisites
+    subgraph Mandatory
+      dockerfile>"Dockerfile"]
+      docker-creds>"Registry &\nCredentials"]
+      image-name>"Image Name"]
+    end
+    subgraph Optional
+      build-args>"Docker build-args"]
+      env-file>".env File"]
+      maven-settings>"maven-settings.xml"]
+    end
   end
-  subgraph scan
-    trivy["Trivy Image Scan"]
-    dockle["Dockle Image Scan"]
+  subgraph Jobs
+    subgraph Build
+      build{"Build & Push\nto Registry"}
+      hadolint{"Lint Dockefile\nwith Hadolint"}
+    end
+    subgraph Test
+      dockle{"Scan image\nwith Dockle"}
+      trivy{"Vulnerability Scan\nwith Trivy"}
+    end
   end
-  build-image ==>|on_success| trivy
-  build-image ==>|on_success| dockle
+  subgraph Artifacts
+    subgraph Registry
+      image["my-image:auto-tag"]
+    end
+    subgraph Hadolint
+      hado-tty["TTY"]
+    end
+    subgraph Trivy
+      trivy-tty["TTY"]
+    end
+    subgraph Dockle
+      dockle-json["dockle-report.json"]
+    end
+  end
+  
+  %% dependencies -> Jobs
+  image-name-->build
+  docker-creds-->build
+  dockerfile-->build
+  dockerfile-->hadolint
+  build-args-.->build
+  env-file-.->build
+  maven-settings-.->build
+  build ==>|on_success| trivy
+  build ==>|on_success| dockle
+  
+  %% Jobs -> Artifacts
+  build-->image
+  trivy-->trivy-tty
+  dockle-->dockle-json
+  hadolint-->hado-tty
+
 ```
 
 ### Build & Push to Registry

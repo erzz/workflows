@@ -66,14 +66,14 @@ flowchart LR
   end
 
   %% dependencies -> Jobs
-  jacoco-->|mandatory|unit-tests
-  surefire-->|mandatory|unit-tests
-  mvn-settings-.->|optional|unit-tests
-  gcp-sa-.->|optional|unit-tests
-  gcp-oidc-.->|optional|unit-tests
-  polaris-->|mandatory|polaris-sast
+  jacoco-->unit-tests
+  surefire-->unit-tests
+  mvn-settings-.->unit-tests
+  gcp-sa-.->unit-tests
+  gcp-oidc-.->unit-tests
+  polaris-->polaris-sast
 
-  %% Jobs -> Reports
+  %% Jobs -> Artifacts
   code-quality-->cc-html
   code-quality-->cc-json
   unit-tests-->surefire-xml
