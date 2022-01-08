@@ -7,7 +7,7 @@ Container workflows aim to build container images, push to a registry and test t
 There are two versions of the workflow:
 
 - `container.yml` uses standard authentication with the registry using basic credentials, service account keys etc
-- `continer-oidc.yml` (recommended) uses OIDC authentication between github and GCP
+- `continer-oidc.yml` (recommended) uses OIDC authentication between Github and GCP
 
 ## Included Jobs
 
