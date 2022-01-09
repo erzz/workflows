@@ -7,6 +7,11 @@ on:
         type: boolean
         description: "To use a config you have in your repository already - set to false. Otherwise uses the config in this respository."
         default: true
+      dry-run:
+        required: false
+        type: boolean
+        description: "Used to only preview the release result and notes for testing. Set to true to enable"
+        default: false
       mvn-settings:
         required: false
         type: boolean
@@ -73,7 +78,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
         with:
-          dry_run: false
+          dry_run: ${{ inputs.dry-run }}
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
