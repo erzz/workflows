@@ -23,9 +23,9 @@ jobs:
   #       with:
   #         fetch-depth: 0
 
-  # release:
-  #   uses: erzz/workflows/.github/workflows/semantic-release.yml@main
-  #   with:
-  #     dry-run: true
-  #   secrets:
-  #     token: ${{ secrets.RELEASE_TOKEN }}
+  release:
+    uses: erzz/workflows/.github/workflows/semantic-release.yml@main
+    with:
+      dry-run: true
+    secrets:
+      token: ${{ secrets.RELEASE_TOKEN }}
