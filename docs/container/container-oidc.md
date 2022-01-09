@@ -21,14 +21,12 @@ build:
 
 ## Secrets
 
-| Input               | Required      | Details                                                                                                |
-| ------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
-| `wip`               | for OIDC auth | The workload identity provider to use with the **container-oidc.yml** workflow                         |
-| `service-account`   | for OIDC auth | The service account to impersonate when using the **container-oidc.yml** workflow                      |
-| `user`              | for SA auth   | Username to use for authenticating with your target registry when using the **container.yml** workflow |
-| `password`          | for SA auth   | Password to use for authenticating with your target registry when using the **container.yml** workflow |
-| `npm-token`         | false         | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
-| `mvn-settings-file` | false         | If a maven settings file is required provide the secret containing the file                            |
+| Input               | Required     | Details                                                                                                |
+| ------------------- | ------------ | ------------------------------------------------------------------------------------------------------ |
+| `wip`               | true         | The workload identity provider to use with the **container-oidc.yml** workflow                         |
+| `service-account`   | true         | The service account to impersonate when using the **container-oidc.yml** workflow                      |
+| `npm-token`         | false        | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
+| `mvn-settings-file` | false        | If a maven settings file is required provide the secret containing the file                            |
 
 ## Inputs
 
@@ -63,8 +61,8 @@ build:
     image: my-project/my-app
     dockerfile: build/Dockerfile
   secrets:
-    user: _json_key
-    password: ${{ secrets.SA_JSON_KEY }}
+    wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+    service-account: my-service-account@my-project.iam.gserviceaccount.com
 ```
 
 ### NodeJS container using private NPM registry plus a .env file from previous job
@@ -80,8 +78,8 @@ build:
     env-file: true
     trivy-scan-type: "os"
   secrets:
-    user: _json_key
-    password: ${{ secrets.SA_JSON_KEY }}
+    wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+    service-account: my-service-account@my-project.iam.gserviceaccount.com
     npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
 ```
 
@@ -96,8 +94,8 @@ build:
     env-file: true
     include-tests: false
   secrets:
-    user: _json_key
-    password: ${{ secrets.SA_JSON_KEY }}
+    wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+    service-account: my-service-account@my-project.iam.gserviceaccount.com
 ```
 
 ### Maven-built Java container using a maven-settings.xml file
@@ -110,7 +108,7 @@ jobs:
       image: my-project/my-app
       mvn-settings: true
     secrets:
-      user: _json_key
-      password: ${{ secrets.SA_JSON_KEY }}
+      wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+      service-account: my-service-account@my-project.iam.gserviceaccount.com
       mvn-settings-file: ${{ secrets.MAVEN_SETTINGS_FILE }}
 ```
