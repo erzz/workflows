@@ -18,10 +18,10 @@ jobs:
 
 ## Secrets
 
-| Input                 | Required | Default        | Details                                                                                             |
-| --------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------- |
-| `token`               | true     | N/A - REQUIRED | A secret containing a GITHUB_TOKEN with permissions to create releases, push directly to master etc |
-| `maven-settings-file` | false    | N/A - REQUIRED | If a maven settings file is required provide the secret containing the file                         |
+| Input                 | Required | Details                                                                                             |
+| --------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `token`               | true     | A secret containing a GITHUB_TOKEN with permissions to create releases, push directly to master etc |
+| `maven-settings-file` | false    | If a maven settings file is required provide the secret containing the file                         |
 
 ## Inputs
 
