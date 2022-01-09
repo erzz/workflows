@@ -29,6 +29,7 @@ jobs:
 | ---------------- | -------- | ------- | ---------------------------------------------------------------------------------------------- |
 | `default-config` | false    | `true`  | If you have your own .releaserc.json already in you project - set this input to `false`        |
 | `mvn-settings`   | false    | `false` | Should combine with `default-config: false` and special pom.xml updating config will be used   |
+| `dry-run`        | false    | `false` | Used to only preview the release result and notes for testing. Set to true to enable           |
 
 ## Outputs
 
