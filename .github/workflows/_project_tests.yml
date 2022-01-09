@@ -4,7 +4,7 @@ on: push
 
 jobs:
   container_test:
-    uses: erzz/workflows/.github/workflows/container.yml@tests
+    uses: erzz/workflows/.github/workflows/container.yml@main
     with:
       registry: "eu.gcr.io"
       image: ingka-devops-ersw-dev/container-tests
@@ -13,6 +13,9 @@ jobs:
       user: _json_key
       password: ${{ secrets.REGISTRY_PUSH }}
 
+  source-protection:
+    uses: erzz/workflows/.github/workflows/source-protection.yml@main
+
   # java-tests_test:
   #   runs-on: ubuntu-20.04
   #   steps:
@@ -20,16 +23,9 @@ jobs:
   #       with:
   #         fetch-depth: 0
 
-  # release_test:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-
-  # source_protection_test:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
+  # release:
+  #   uses: erzz/workflows/.github/workflows/semantic-release.yml@main
+  #   with:
+  #     dry-run: true
+  #   secrets:
+  #     token: ${{ secrets.RELEASE_TOKEN }}
