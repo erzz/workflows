@@ -21,8 +21,6 @@ build:
 
 | Input               | Required      | Details                                                                                                |
 | ------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
-| `wip`               | for OIDC auth | The workload identity provider to use with the **container-oidc.yml** workflow                         |
-| `service-account`   | for OIDC auth | The service account to impersonate when using the **container-oidc.yml** workflow                      |
 | `user`              | for SA auth   | Username to use for authenticating with your target registry when using the **container.yml** workflow |
 | `password`          | for SA auth   | Password to use for authenticating with your target registry when using the **container.yml** workflow |
 | `npm-token`         | false         | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
