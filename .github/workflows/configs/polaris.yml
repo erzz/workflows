@@ -1,6 +1,6 @@
 version: "1"
 project:
-  name: rpim/${env.PROJECT_NAME}
+  name: ${env.PROJECT_NAME}
   branch: ${scm.git.branch}
   revision:
     name: ${scm.git.commit}
