@@ -4,7 +4,7 @@ on: push
 
 jobs:
   container_test:
-    uses: erzz/workflows/.github/workflows/container.yml@tests
+    uses: erzz/workflows/.github/workflows/container.yml@main
     with:
       registry: "eu.gcr.io"
       image: ingka-devops-ersw-dev/container-tests
