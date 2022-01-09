@@ -1,0 +1,35 @@
+name: Project Tests
+
+on: push
+
+jobs:
+  container_test:
+    uses: erzz/workflows/.github/workflows/container.yml@tests
+    with:
+      registry: "eu.gcr.io"
+      image: ingka-devops-ersw-dev/container-tests
+      dockerfile: tests/container/Dockerfile
+    secrets:
+      user: _json_key
+      password: ${{ secrets.REGISTRY_PUSH }}
+
+  # java-tests_test:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+
+  # release_test:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+
+  # source_protection_test:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0

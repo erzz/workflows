@@ -1,0 +1,6 @@
+# Docker signing mechanism not supported by GCR
+CIS-DI-0005
+
+# This is fake container image for testing so ignore HEALTHCHECK
+CIS-DI-0006
+
