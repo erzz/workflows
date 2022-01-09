@@ -19,12 +19,12 @@ build:
 
 ## Secrets
 
-| Input               | Required      | Details                                                                                                |
-| ------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
-| `user`              | for SA auth   | Username to use for authenticating with your target registry when using the **container.yml** workflow |
-| `password`          | for SA auth   | Password to use for authenticating with your target registry when using the **container.yml** workflow |
-| `npm-token`         | false         | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
-| `mvn-settings-file` | false         | If a maven settings file is required provide the secret containing the file                            |
+| Input               | Required | Details                                                                                                |
+| ------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `user`              | true     | Username to use for authenticating with your target registry when using the **container.yml** workflow |
+| `password`          | true     | Password to use for authenticating with your target registry when using the **container.yml** workflow |
+| `npm-token`         | false    | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
+| `mvn-settings-file` | false    | If a maven settings file is required provide the secret containing the file                            |
 
 ## Inputs
 
