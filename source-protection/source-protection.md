@@ -1,4 +1,4 @@
-# Source Protection Release Workflow
+# Source Protection Workflow
 
 ## Usage
 
