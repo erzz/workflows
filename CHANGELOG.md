@@ -1,3 +1,29 @@
+## [1.4.0](https://github.com/erzz/workflows/compare/v1.3.0...v1.4.0) (2022-01-10)
+
+
+### :sparkles: New Features
+
+* **java-tests:** add code quality job ([215a032](https://github.com/erzz/workflows/commit/215a032504abf61154e52794ce462e6770b349f5))
+* **java-tests:** add polaris SAST scanning ([07634b5](https://github.com/erzz/workflows/commit/07634b562313dd95d5010a339580544dd3897cf4))
+* **java-tests:** add unit-test job ([21e95bd](https://github.com/erzz/workflows/commit/21e95bdb23a3221e118de3f22b9a146dbcbfe5bd))
+* **polaris:** provide polaris result analyzer ([d6de55e](https://github.com/erzz/workflows/commit/d6de55e6d2803fd75b60fbb7eefee4de2bd03e59))
+
+
+### :package: Maintenance
+
+* **deps:** update stacscan/stacs-ci action to v0.1.2 ([5248ec5](https://github.com/erzz/workflows/commit/5248ec54e12d473c7d9b0ac6f91771b3f45464ae))
+
+
+### :bug: Bug Fixes
+
+* **commit-lint:** provide conventional config as baseline with reasonable fetch depth ([b7948c5](https://github.com/erzz/workflows/commit/b7948c5fa00dd1135da25ce3b5af40ff010c9ac6))
+* make failure more robust when fetching configs ([b4a2f81](https://github.com/erzz/workflows/commit/b4a2f81e169293c8737703c3653bd1d8b584aa1b))
+* **polaris:** add fetching of the polaris.yml config ([c7817ef](https://github.com/erzz/workflows/commit/c7817efa273b329f505538edfbc6639ef71a840c))
+* **polaris:** fetch the result analyzer as part of the job ([f12dd66](https://github.com/erzz/workflows/commit/f12dd6646f28befaabcc626b716e176438e8d8e2))
+* **polaris:** remove prefix from project name ([30d61d1](https://github.com/erzz/workflows/commit/30d61d11d9908858a34e1c49c107287d389ba966))
+* **unit-tests:** fix broken images in jacoco report ([4393362](https://github.com/erzz/workflows/commit/4393362c72668480fcc53c9391f11a80cc925dd3))
+* **unit-tests:** remove duplicate upload of surefire reports ([75288e5](https://github.com/erzz/workflows/commit/75288e550d7c02c56f8cc53de36c2745d9edd95b))
+
 ## [1.3.0](https://github.com/erzz/workflows/compare/v1.2.0...v1.3.0) (2022-01-05)
 
 
