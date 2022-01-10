@@ -2,14 +2,14 @@
 
 ## Purpose
 
+Jobs that catch credentials being committed to source or commit messages that do not follow the team's convention. Both issues are easy to rectify when caught quickly but somewhat more complex to handle if not.
+
 This workflow will check your repo for:
 
 - accidentally committed credentials and secrets
 - optionally validate the commit history for adherence to conventional commit practices
 
-!> This workflow is intended to be run early (from first push to a branch) in order to catch issues with your repository **EARLY** when they are easy to fix!
-
-?> The workflow can of course be run at any time and I recommend that it runs also at least for main and possibly also pre-deployment to production too!
+!> This workflow is intended to be run early (from first push to a branch) in order to catch issues with your repository **EARLY** when they are easy to fix! To run the jobs on every push, put them in a workflow that executes `on.push`
 
 ## Included Jobs
 
