@@ -12,7 +12,7 @@
   - [Use Java Tests Workflow](java-tests/java-tests.md)
 
 - [**Node Test Workflows**](node-tests/README.md)
-  - [Use Java Tests Workflow](node-tests/node-tests.md)
+  - [Use Node Tests Workflow](node-tests/node-tests.md)
 
 - [**Release Workflows**](release/README.md)
   - [Use Semantic-Release Workflow](release/release.md)
