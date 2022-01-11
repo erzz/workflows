@@ -1,0 +1,115 @@
+name: NodeJS Tests
+
+# TODO
+# Static File ?
+# Docs
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        description: "The version of NodeJS to use for your tests"
+        default: "16"
+      install-command:
+        required: false
+        type: string
+        description: "Used to override the default command to install your dependencies e.g. yarn install"
+        default: "yarn install --silent"
+      eslint-command:
+        required: false
+        type: string
+        description: "Used to override the default command to execute ES Lint e.g. yarn lint:ci"
+        default: "yarn lint:ci"
+      unit-test-command:
+        required: false
+        type: string
+        description: "Used to override the default command to run your unit tests e.g. yarn test:unit-ci"
+        default: "yarn test:unit-ci"
+    secrets:
+      # <-------------------- NPM AUTH ------------------->
+      npm-token:
+        required: false
+        description: "If needing to authenticate with your NPM repository, provide the token which will be exposed as NPM_TOKEN"
+
+jobs:
+  # <---------------------- ES LINT ---------------------->
+  eslint:
+    name: ES Lint
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.npm-token }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Lint
+        run: |
+          ${{ inputs.install-command }}
+          ${{ inputs.eslint.command }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ES Lint Report
+          path: 'test-report.html'
+
+  # <--------------------- UNIT TESTS --------------------->
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.npm-token }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install Dependencies
+        run: ${{ inputs.install-command }}
+
+      - name: Execute Unit Tests
+        run: ${{ inputs.unit-test-command }}
+
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Unit Test & Coverage Reports
+          path: |
+            junit.xml
+            test-report.html
+            coverage/cobertura-coverage.xml
+
+  # <---------------------  NJSSCAN ---------------------->
+  njsscan:
+    name: NJS Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: nodejsscan scan
+        id: njsscan
+        uses: ajinabraham/njsscan-action@master
+        with:
+          args: '. --html --output njsscan.html || true'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: NJS Scan Report
+          path: 'njsscan.html'
+
