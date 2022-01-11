@@ -1,4 +1,4 @@
-name: Build & Scan Container Image
+name: Java (Maven) Tests
 
 on:
   workflow_call:

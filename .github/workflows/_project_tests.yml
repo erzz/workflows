@@ -23,6 +23,13 @@ jobs:
   #       with:
   #         fetch-depth: 0
 
+  # node-tests_test:
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+
   release:
     uses: erzz/workflows/.github/workflows/semantic-release.yml@main
     with:
