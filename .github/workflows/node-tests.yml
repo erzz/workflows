@@ -67,7 +67,7 @@ jobs:
         if: always()
         with:
           name: ES Lint Report
-          path: 'test-report.html'
+          path: 'eslint-report.html'
 
   # <---------------------  NJSSCAN ---------------------->
   njsscan:
