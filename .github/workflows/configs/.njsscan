@@ -1,0 +1,32 @@
+---
+- nodejs-extensions:
+  - .js
+
+  template-extensions:
+  - .new
+  - .hbs
+  - ''
+
+  ignore-filenames:
+  - skip.js
+  - .njsscan
+  - .dockerignore
+  - .browserlistrc
+  - .sentryclirc
+  - Dockerfile
+  - .eslintignore
+  - .yarnclean
+  - .npmrc
+  - .editorconfig
+
+  ignore-paths:
+  - cicd
+  - .github
+  - .gitlab
+  - node_modules
+
+  ignore-extensions:
+  - .jsx
+
+  ignore-rules:
+  - example_regex_injection_dos

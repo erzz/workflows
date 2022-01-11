@@ -1,12 +1,12 @@
 name: NodeJS Tests
 
 # TODO
-# Static File ?
 # Docs
 
 on:
   workflow_call:
     inputs:
+      # <---------------- GENERAL SETTINGS --------------->
       node-version:
         required: false
         type: string
@@ -17,11 +17,19 @@ on:
         type: string
         description: "Used to override the default command to install your dependencies e.g. yarn install"
         default: "yarn install --silent"
+      # <---------------- ESLINT SETTINGS ---------------->
       eslint-command:
         required: false
         type: string
         description: "Used to override the default command to execute ES Lint e.g. yarn lint:ci"
         default: "yarn lint:ci"
+      # <--------------- NJSSCAN SETTINGS ---------------->
+      njsscan-default-config:
+        required: false
+        type: boolean
+        description: "If you would rather use your own .njsscan configuration, set to false"
+        default: true
+      # <--------------- UNIT-TEST SETTINGS -------------->
       unit-test-command:
         required: false
         type: string
@@ -100,6 +108,12 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
+      - name: Get Configuration
+        if: ${{ inputs.njsscan-default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L --fail -o .njsscan https://raw.githubusercontent.com/erzz/workflows/node-tests/.github/workflows/configs/.njsscan || exit 1
+
       - name: nodejsscan scan
         id: njsscan
         uses: ajinabraham/njsscan-action@master
@@ -112,4 +126,3 @@ jobs:
         with:
           name: NJS Scan Report
           path: 'njsscan.html'
-
