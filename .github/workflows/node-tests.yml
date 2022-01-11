@@ -112,7 +112,7 @@ jobs:
         if: ${{ inputs.njsscan-default-config }}
         run: |
           echo "Fetching default configuration from erzz/workflows..."
-          curl -L --fail -o .njsscan https://raw.githubusercontent.com/erzz/workflows/node-tests/.github/workflows/configs/.njsscan || exit 1
+          curl -L --fail -o .njsscan https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.njsscan || exit 1
 
       - name: nodejsscan scan
         id: njsscan
