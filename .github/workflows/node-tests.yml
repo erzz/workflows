@@ -69,6 +69,33 @@ jobs:
           name: ES Lint Report
           path: 'test-report.html'
 
+  # <---------------------  NJSSCAN ---------------------->
+  njsscan:
+    name: NJS Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Get Configuration
+        if: ${{ inputs.njsscan-default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L --fail -o .njsscan https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.njsscan || exit 1
+
+      - name: nodejsscan scan
+        id: njsscan
+        uses: ajinabraham/njsscan-action@master
+        with:
+          args: '. --html --output njsscan.html || true'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: NJS Scan Report
+          path: 'njsscan.html'
+
   # <--------------------- UNIT TESTS --------------------->
   unit-tests:
     name: Unit Tests
@@ -99,30 +126,3 @@ jobs:
             junit.xml
             test-report.html
             coverage/cobertura-coverage.xml
-
-  # <---------------------  NJSSCAN ---------------------->
-  njsscan:
-    name: NJS Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-
-      - name: Get Configuration
-        if: ${{ inputs.njsscan-default-config }}
-        run: |
-          echo "Fetching default configuration from erzz/workflows..."
-          curl -L --fail -o .njsscan https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.njsscan || exit 1
-
-      - name: nodejsscan scan
-        id: njsscan
-        uses: ajinabraham/njsscan-action@master
-        with:
-          args: '. --html --output njsscan.html || true'
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: NJS Scan Report
-          path: 'njsscan.html'
