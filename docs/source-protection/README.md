@@ -4,7 +4,7 @@
 
 Jobs that catch credentials being committed to source or commit messages that do not follow the team's convention. Both issues are easy to rectify when caught quickly but somewhat more complex to handle if not.
 
-This workflow will check your repo for:
+This workflow will check your repository for:
 
 - accidentally committed credentials and secrets
 - optionally validate the commit history for adherence to conventional commit practices
@@ -59,7 +59,7 @@ flowchart LR
 
 ### Gitleaks
 
-Runs Gitleaks which checks your repo for accidentally committed credentials
+Runs Gitleaks which checks your repository for accidentally committed credentials
 
 **Uses:** [zricethezav/gitleaks-action@v1.6.0](https://github.com/zricethezav/gitleaks-action)
 

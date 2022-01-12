@@ -3,6 +3,16 @@ name: Project Tests
 on: push
 
 jobs:
+  spell-check:
+    name: Spellcheck Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Spellcheck
+        uses: rojopolis/spellcheck-github-actions@0.20.0
+
   container:
     uses: erzz/workflows/.github/workflows/container.yml@main
     with:

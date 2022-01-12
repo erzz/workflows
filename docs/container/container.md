@@ -19,12 +19,12 @@ build:
 
 ## Secrets
 
-| Input               | Required | Details                                                                                                |
-| ------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| `user`              | true     | Username to use for authenticating with your target registry when using the **container.yml** workflow |
-| `password`          | true     | Password to use for authenticating with your target registry when using the **container.yml** workflow |
-| `npm-token`         | false    | If using a private NPM repo, provide the token and it will be exported as NPM_TOKEN in the workflow    |
-| `mvn-settings-file` | false    | If a maven settings file is required provide the secret containing the file                            |
+| Input               | Required | Details                                                                                                 |
+| ------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `user`              | true     | Username to use for authenticating with your target registry when using the **container.yml** workflow  |
+| `password`          | true     | Password to use for authenticating with your target registry when using the **container.yml** workflow  |
+| `npm-token`         | false    | If using a private NPM registry, provide the token and it will be exported as NPM_TOKEN in the workflow |
+| `mvn-settings-file` | false    | If a maven settings file is required provide the secret containing the file                             |
 
 ## Inputs
 
@@ -49,7 +49,7 @@ build:
 
 ## Other Examples
 
-### Using a Dockerfile that is not at repository root
+### Custom Dockerfile location
 
 ```yaml
 build:
@@ -63,7 +63,7 @@ build:
     password: ${{ secrets.SA_JSON_KEY }}
 ```
 
-### NodeJS container using private NPM registry plus a .env file from previous job
+### NodeJS with private NPM Registry & .env file
 
 ```yaml
 build:
@@ -81,7 +81,7 @@ build:
     npm-token: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
 ```
 
-### Go container using .env file from previous job and skipping the test jobs
+### Go using .env file and skipping the test jobs
 
 ```yaml
 build:
@@ -96,7 +96,7 @@ build:
     password: ${{ secrets.SA_JSON_KEY }}
 ```
 
-### Maven-built Java container using a maven-settings.xml file
+### Maven with maven-settings.xml
 
 ```yaml
 jobs:

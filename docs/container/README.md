@@ -29,7 +29,7 @@ flowchart LR
   subgraph Jobs
     subgraph Build
       build{"Build & Push\nto Registry"}
-      hadolint{"Lint Dockefile\nwith Hadolint"}
+      hadolint{"Lint Dockerfile\nwith Hadolint"}
     end
     subgraph Test
       dockle{"Scan image\nwith Dockle"}

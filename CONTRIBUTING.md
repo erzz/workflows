@@ -3,7 +3,7 @@
 All contributions are welcome via a Pull Request either from a branch of this repository or your own fork.
 
 Creation of a Pull Request does not mean it will be accepted! Please don't take it personally if a PR is 
-rejected or changes are requested! Even PR's that are rejected contribute to the pool of ideas and 
+rejected or changes are requested! Even pull requests that are rejected contribute to the pool of ideas and 
 requirements floating around and it can be a matter of personal preference in the end. 
 
 This project is rather opinionated in the end and that's because its used heavily in my own day job. 
@@ -17,7 +17,7 @@ But its an MIT license - so fork, copy, whatever for your own personal needs.
    secrets, variables, useful file locations and container parameters.
 3. All commit messages must follow the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/)
    format!
-4. Only project memebers can merge a Pull Request after at least one approval.
+4. Only project members can merge a Pull Request after at least one approval.
 
 ## Working with the Docs
 
