@@ -1,6 +1,6 @@
 # Java Tests Workflow
 
-## Usage
+## Basic
 
 Due to the nature of the jobs in this workflow, there are many possible inputs and secrets that can be applied. The **vast majority** of them are optional!
 
@@ -86,7 +86,7 @@ As there are many potential inputs they are broken up into separate groups here 
 
 None
 
-## Other Examples
+## Advanced Examples
 
 ### Use a maven-settings.xml
 

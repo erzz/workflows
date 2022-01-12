@@ -1,4 +1,4 @@
-# Source Protection Workflow Overview <!-- {docsify-ignore-all} -->
+# Source Protection Workflow Overview
 
 ## Purpose
 

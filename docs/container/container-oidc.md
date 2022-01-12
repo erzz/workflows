@@ -1,6 +1,6 @@
 # Container (OIDC) Workflow
 
-## Usage
+## Basic
 
 There are two alternative workflows (due to numerous actions limitations) depending on which type of authentication you use between Github Actions and GCP. If you want to use Basic or Service Account authentication then see [container.yml](/container/container.md)
 
@@ -49,7 +49,7 @@ build:
 | `image-tag`  | The image tag applied to the built image        | `main-23f1a`                  |
 | `branch`     | The branch or tag for which the image was built | `main`                        |
 
-## Other Examples
+## Adavnced Examples
 
 ### Custom Dockerfile location
 

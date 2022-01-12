@@ -1,6 +1,6 @@
 # Semantic Release Workflow
 
-## Usage
+## Basic
 
 Simply include the workflow within your project's workflow using something like the following.
 
@@ -39,7 +39,7 @@ jobs:
 | new_release_version   | The version given to the release if created                | `v1.2.0`                               |
 | new_release_notes     | The contents of the release notes if a release was created | The full markdown of the release notes |
 
-## Other Examples
+## Advanced Examples
 
 ### Use your own configuration
 

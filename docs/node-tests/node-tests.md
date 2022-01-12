@@ -1,6 +1,6 @@
 # Node Tests Workflow
 
-## Usage
+## Basic
 
 Due to the nature of the jobs in this workflow, much of the configuration will happen in your Node project's configuration. See [Tips for Script Configuration](node-tests/node-tests?id=tips-for-script-configuration)
 
@@ -43,7 +43,7 @@ node-tests:
 
 None
 
-## Other Examples
+## Advanced Examples
 
 ### Using your own yarn commands
 
