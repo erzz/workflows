@@ -49,7 +49,7 @@ build:
 | `image-tag`  | The image tag applied to the built image        | `main-23f1a`                  |
 | `branch`     | The branch or tag for which the image was built | `main`                        |
 
-## Adavnced Examples
+## Advanced Examples
 
 ### Custom Dockerfile location
 
