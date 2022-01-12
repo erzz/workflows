@@ -1,6 +1,6 @@
 # Source Protection Workflow
 
-## Usage
+## Basic
 
 Simply include the workflow within your project's workflow using something like the following.
 
@@ -33,7 +33,7 @@ in the jobs
 
 None at this time
 
-## Other Examples
+## Advanced Examples
 
 ### Run only the credential scanning jobs
 

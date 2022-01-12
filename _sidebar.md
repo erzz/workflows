@@ -5,17 +5,17 @@
 - [**Basics**](README.md)
 
 - [**Container Workflows**](container/README.md)
-  - [Use Container Workflow](container/container.md)
-  - [Use Container OIDC Workflow](container/container-oidc.md)
+  - [Usage (Basic Authentication)](container/container.md)
+  - [Usage (OIDC Authentication)](container/container-oidc.md)
 
 - [**Java Test Workflows**](java-tests/README.md)
-  - [Use Java Tests Workflow](java-tests/java-tests.md)
+  - [Usage](java-tests/java-tests.md)
 
 - [**Node Test Workflows**](node-tests/README.md)
-  - [Use Node Tests Workflow](node-tests/node-tests.md)
+  - [Usage](node-tests/node-tests.md)
 
 - [**Release Workflows**](release/README.md)
-  - [Use Semantic-Release Workflow](release/release.md)
+  - [Usage](release/release.md)
 
 - [**Source Protection Workflows**](source-protection/README.md)
-  - [Use Source-Protection Workflow](source-protection/source-protection.md)
+  - [Usage](source-protection/source-protection.md)

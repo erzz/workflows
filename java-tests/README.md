@@ -1,4 +1,4 @@
-# Java-Tests Workflow Overview <!-- {docsify-ignore-all} -->
+# Java-Tests Workflow Overview 
 
 ## Purpose
 

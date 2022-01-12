@@ -1,4 +1,4 @@
-# Release Workflow Overview <!-- {docsify-ignore-all} -->
+# Release Workflow Overview
 
 ## Purpose
 
