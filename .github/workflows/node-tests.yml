@@ -18,18 +18,33 @@ on:
         description: "Used to override the default command to install your dependencies e.g. yarn install"
         default: "yarn install --silent"
       # <---------------- ESLINT SETTINGS ---------------->
+      eslint-enable:
+        required: false
+        type: boolean
+        description: "To disable the eslint job set to false"
+        default: true
       eslint-command:
         required: false
         type: string
         description: "Used to override the default command to execute ES Lint e.g. yarn lint:ci"
         default: "yarn lint:ci"
       # <--------------- NJSSCAN SETTINGS ---------------->
+      njsscan-enable:
+        required: false
+        type: boolean
+        description: "To disable the njsscan job set to false"
+        default: true
       njsscan-default-config:
         required: false
         type: boolean
         description: "If you would rather use your own .njsscan configuration, set to false"
         default: true
       # <--------------- UNIT-TEST SETTINGS -------------->
+      unit-test-enable:
+        required: false
+        type: boolean
+        description: "To disable the unit-tests job set to false"
+        default: true
       unit-test-command:
         required: false
         type: string
@@ -46,6 +61,7 @@ jobs:
   eslint:
     name: ES Lint
     runs-on: ubuntu-latest
+    if: ${{ inputs.eslint-enable }}
     env:
       NPM_TOKEN: ${{ secrets.npm-token }}
     steps:
@@ -73,6 +89,7 @@ jobs:
   njsscan:
     name: NJS Scan
     runs-on: ubuntu-latest
+    if: ${{ inputs.njsscan-enable }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -100,6 +117,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    if: ${{ inputs.unit-test-enable }}
     env:
       NPM_TOKEN: ${{ secrets.npm-token }}
     steps:
