@@ -42,7 +42,7 @@ As you can see, the only really mandatory configurations then are for the paid P
 
 ## Inputs
 
-As there are many potential inputs they are broken up into seperate groups here for easier reference
+As there are many potential inputs they are broken up into separate groups here for easier reference
 
 ### Maven Inputs
 

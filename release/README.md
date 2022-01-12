@@ -14,7 +14,7 @@ This workflow will:
 ### Maven Specific
 
 - Options to switch to [maven version](https://github.com/erzz/workflows/blob/main/.github/workflows/configs/semantic-release-config-mvn.json) of the semantic-release configuration which also updates the version in `pom.xml`
-- Option for a maven-settings.xml file to be created from a secret for authenticating with maven repos
+- Option for a maven-settings.xml file to be created from a secret for authenticating with maven repositories
 
 ## Included Jobs
 

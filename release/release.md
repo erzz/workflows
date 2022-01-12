@@ -41,7 +41,7 @@ jobs:
 
 ## Other Examples
 
-### Run the job with a configuration already in your repo
+### Use your own configuration
 
 ```yaml
 release:
