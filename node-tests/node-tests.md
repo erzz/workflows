@@ -32,8 +32,11 @@ node-tests:
 | ------------------------ | -------- | ----------------------- | ------------------------------------------------------------------------------------- |
 | `node-version`           | false    | `16`                    | The version of NodeJS to use for your tests                                           |
 | `install-command`        | false    | `yarn install --silent` | Used to override the default command to install your dependencies e.g. `yarn install` |
+| `eslint-enable `         | false    | `true`                  | To disable the eslint job set to `false`                                              |
 | `eslint-command`         | false    | `yarn lint:ci`          | Used to override the default command to execute ES Lint e.g. `yarn lint:ci`           |
+| `njsscan-enable`         | false    | `true`                  | To disable the njsscan job set to `false`                                             |
 | `njsscan-default-config` | false    | `true`                  | If you would rather use your own .njsscan configuration, set to false                 |
+| `unit-test-enable`       | false    | `true`                  | To disable the unit-tests job set to `false`                                          |
 | `unit-test-command`      | false    | `yarn test:unit-ci`     | Used to override the default command to run your unit tests e.g. `yarn test:unit-ci`  |
 
 ## Outputs
