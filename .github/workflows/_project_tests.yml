@@ -3,7 +3,7 @@ name: Project Tests
 on: push
 
 jobs:
-  container_test:
+  container:
     uses: erzz/workflows/.github/workflows/container.yml@main
     with:
       registry: "eu.gcr.io"
@@ -23,12 +23,12 @@ jobs:
   #       with:
   #         fetch-depth: 0
 
-  # node-tests_test:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
+  node-tests:
+    uses: erzz/workflows/.github/workflows/node-tests.yml@main
+    with:
+      node-version: 16
+      eslint-command: cd tests/node-sample-app && yarn lint
+      unit-test-command: cd tests/node-sample-app && yarn test
 
   release:
     uses: erzz/workflows/.github/workflows/semantic-release.yml@main
