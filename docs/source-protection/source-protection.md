@@ -15,12 +15,12 @@ None at this time
 ## Inputs
 
 ?> You may want to tweak `fetch-depth` to a number that works for your projects. It determines how many commits to fetch for analysis in both the gitleaks and the commitlint jobs.
-One option is to set to `0` which will fetch every commit but can be slow in long-lived repos. It certainly should be reasonably many commits and definitely more than 10 to be usable
+One option is to set to `0` which will fetch every commit but can be slow in long-lived repositories. It certainly should be reasonably many commits and definitely more than 10 to be usable
 in the jobs
 
 | Input                    | Required | Default                 | Details                                                                                                           |
 | ------------------------ | -------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `fetch-depth`            | false    | `50`                    | How many commits to fetch from the repo. Set to 0 for all (slow!) - but at least a minimum of 2                   |
+| `fetch-depth`            | false    | `50`                    | How many commits to fetch from the repository. Set to 0 for all (slow!) - but at least a minimum of 2             |
 | `creds-scan-directory`   | false    | `''`                    | Defaults to the repository root - specify your own path if required                                               |
 | `creds-fail-build`       | false    | `true`                  | Defaults to failing the job if tests do not pass. Set to false for the opposite (yet not recommended!) behaviour" |
 | `creds-gitleaks-config`  | false    | `.gitleaks.toml`        | Path to a custom gitleaks config if required                                                                      |

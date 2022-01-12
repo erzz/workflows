@@ -5,7 +5,7 @@
 > Reusable workflows to save on copy & paste CI/CD
 
 - Less CI & CD code to maintain!
-- Apply a single change across many projects instead of dozens of PR's
+- Apply a single change across many projects instead of dozens of Pull Requests!
 - Consistency in knowing that all projects are built and tested in the same way
 - Get up and running with new projects much faster!
 
