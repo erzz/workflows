@@ -1,3 +1,28 @@
+## [1.5.0](https://github.com/erzz/workflows/compare/v1.4.0...v1.5.0) (2022-01-13)
+
+
+### :bug: Bug Fixes
+
+* **eslint:** correct the report path ([ec9ca1c](https://github.com/erzz/workflows/commit/ec9ca1c5ead5200423192e6bd52718b7c3944cc3))
+* **general:** update workflow names ([ed831fd](https://github.com/erzz/workflows/commit/ed831fd065de756e22f784e6b531b5fd71574cdc))
+
+
+### :package: Maintenance
+
+* **deps:** update rlespinasse/github-slug-action action to v4 ([1338bd5](https://github.com/erzz/workflows/commit/1338bd5538b22fdb4ce0a829016a8f6c03d0b070))
+* **deps:** update stacscan/stacs-ci action to v0.1.4 ([e1bd1fa](https://github.com/erzz/workflows/commit/e1bd1fa7dd4ed7fb610a7d1adf7984bf92a38c7f))
+* **java-tests:** remove extra character in input description ([12866e4](https://github.com/erzz/workflows/commit/12866e4a3ae6db2d60517d3784ad45e28c87642f))
+
+
+### :sparkles: New Features
+
+* add node-tests workflow ([1b9fe01](https://github.com/erzz/workflows/commit/1b9fe01627ff860bae31549a6ed368ec59c22ce1))
+* **go-tests:** add gosec, unit tests and code-quality ([729f866](https://github.com/erzz/workflows/commit/729f8667e0dca30750aa62ff7e89d368bc321f42))
+* **go-tests:** add option for GCP auth in unit tests ([5b70399](https://github.com/erzz/workflows/commit/5b703993aa6cfd86a9a78eaf1a4c0f1c1351427c))
+* **gosec:** add option to pass extra flags ([5b15ea3](https://github.com/erzz/workflows/commit/5b15ea339ddf98abc621e0f7c64c39b209001f53))
+* **njsscan:** add option to provide your own config ([1d3157c](https://github.com/erzz/workflows/commit/1d3157c16aebe0664377f343777c1800134433a7))
+* **node-tests:** add switches to enable/disable each job ([63a40c6](https://github.com/erzz/workflows/commit/63a40c66d4db2dcb72164ba750f864d96ffe9334))
+
 ## [1.4.0](https://github.com/erzz/workflows/compare/v1.3.0...v1.4.0) (2022-01-10)
 
 
