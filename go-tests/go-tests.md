@@ -35,6 +35,7 @@ go-tests:
 | `cc-blocker-threshold`  | false    | `0`                | Max number of BLOCKER Code Climate findings allowed before forcing a failed result             |
 | `gosec-default-config`  | false    | `true`             | Set to false if you want to use your own `.gosec-config.json`                                  |
 | `gosec-scan-path`       | false    | `./...`            | Set a custom path for gosec to scan if required                                                |
+| `gosec-extra-flags`     | false    | `""`               | Pass any extra gosec flags here such as `-exclude=G104`                                        |
 | `unit-test-path`        | false    | `./...`            | Set a custom path for the go test command if required                                          |
 
 ## Outputs
