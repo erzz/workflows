@@ -8,6 +8,9 @@
   - [Usage (Basic Authentication)](container/container.md)
   - [Usage (OIDC Authentication)](container/container-oidc.md)
 
+- [**Go Test Workflows**](go-tests/README.md)
+  - [Usage](go-tests/go-tests.md)
+
 - [**Java Test Workflows**](java-tests/README.md)
   - [Usage](java-tests/java-tests.md)
 

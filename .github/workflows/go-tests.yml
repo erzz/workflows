@@ -2,6 +2,8 @@ name: Go Tests
 
 # TODO
 # Docs
+# Project Tests
+# switch to main branch again
 
 on:
   workflow_call:
@@ -13,7 +15,7 @@ on:
       #   required: false
       #   type: string
       #   description: "Select the version of go to use. Accepts https://github.com/npm/node-semver"
-      #   default: "^1.17.0"
+      #   default: "^1.17"
       go-env-vars:
         required: false
         type: string
