@@ -101,3 +101,10 @@ xml
 YARA
 yml
 zricethezav
+gosec
+ut
+Gosec
+AST
+securego
+https
+semver

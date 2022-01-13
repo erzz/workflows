@@ -11,7 +11,7 @@ In general it will run your Unit (`go test`), gosec (SAST) and Code Quality test
 - Code Quality
   - Provides a default configuration with the option to use your own
   - Provides HTML report as an artifact
-- goesec (SAST)
+- gosec (SAST)
   - Provides a default configuration with the option to use your own
   - Provides an HTML report as an artifact
 - Unit Tests

@@ -15,7 +15,7 @@ None at this time
 
 ## Inputs
 
-!> the `go-version` input is currently disabled due to an issue with the `setup-go` action within resuable workflows.
+!> the `go-version` input is currently disabled due to an issue with the `setup-go` action within reusable workflows.
 
 | Input                   | Required | Default            | Details                                                                                 |
 | ----------------------- | -------- | ------------------ | --------------------------------------------------------------------------------------- |
