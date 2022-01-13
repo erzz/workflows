@@ -88,7 +88,7 @@ jobs:
         if: ${{ inputs.cc-default-config }}
         run: |
           echo "Fetching default configuration from erzz/workflows..."
-          curl -L --fail -o .codeclimate.yml https://raw.githubusercontent.com/erzz/workflows/go-tests/.github/workflows/configs/.go-codeclimate.yml || exit 1
+          curl -L --fail -o .codeclimate.yml https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.go-codeclimate.yml || exit 1
 
       - name: Code Climate Standalone
         uses: erzz/codeclimate-standalone@v0.0.3
@@ -122,7 +122,7 @@ jobs:
         if: ${{ inputs.gosec-default-config }}
         run: |
           echo "Fetching default configuration from erzz/workflows..."
-          curl -L --fail -o .gosec-config.json https://raw.githubusercontent.com/erzz/workflows/go-tests/.github/workflows/configs/.gosec-config.json || exit 1
+          curl -L --fail -o .gosec-config.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.gosec-config.json || exit 1
 
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
