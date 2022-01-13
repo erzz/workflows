@@ -33,7 +33,7 @@ build:
 | `image`           | true     | N/A - REQUIRED | The path and image name to create e.g. `my-project/myapp` Note: tags will be automatically created |
 | `registry`        | false    | `eu.gcr.io`    | The domain name of the registry to push the built image to                                         |
 | `dockerfile`      | false    | `Dockerfile`   | Relative path to the Dockerfile to build from                                                      |
-| `build-args`      | false    | N/A            | Comma separated list of environment variables to pass as build args                                |
+| `build-args`      | false    | `""`           | Comma separated list of environment variables to pass as build args                                |
 | `env-file`        | false    | `false`        | If there is an `.env` file to include set to true - expects an artifact named env-file             |
 | `mvn-settings`    | false    | `false`        | Set to true in combination with the mvn-settings-file secret if a maven settings file is required  |
 | `trivy-scan-type` | false    | `os,library`   | The comma separated list of the scan types to perform (no spaces!)                                 |
@@ -44,7 +44,7 @@ build:
 | Output       | Description                                     | Example value                 |
 | ------------ | ----------------------------------------------- | ----------------------------- |
 | `image-name` | The full registry and path of the built image   | `eu.gcr.io/my-project/my-app` |
-| `image-tag`  | The image tag applied to the built image        | `main-23f1a`                  |
+| `image-tag`  | The image tag applied to the built image        | `main-23f1ac`                 |
 | `branch`     | The branch or tag for which the image was built | `main`                        |
 
 ## Advanced Examples

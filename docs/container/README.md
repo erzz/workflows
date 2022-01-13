@@ -76,19 +76,19 @@ Builds a container image from Dockerfile and pushes to a registry of your choice
 
 **Uses:** [mr-smithers-excellent/docker-build-push@v5](https://github.com/mr-smithers-excellent/docker-build-push)
 
-## Hadolint
+### Hadolint
 
 Lints the Dockerfile for best practices, minimisation tips and potential security issues
 
 **Uses:** [hadolint/hadolint-action@v1.6.0](https://github.com/hadolint/hadolint-action)
 
-## Trivy Image Scan
+### Trivy Image Scan
 
 Excellent & very fast image scanner that finds vulnerabilities in OS packages and common language dependencies such as Node/Go/Java etc.
 
 **Uses:** [aquasecurity/trivy-action@master](https://github.com/aquasecurity/trivy-action)
 
-## Dockle
+### Dockle
 
 Runs a overlapping yet significantly different, set of security checks and best practice checks to Hadolint - with a focus on the final image as opposed to just the Dockerfile
 
