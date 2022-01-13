@@ -23,7 +23,7 @@ Please refer to the [Docs](https://erzz.github.io/workflows) for each workflow's
 | [semantic-release](/.github/workflows/release.yml)            | Create releases based on semantic commits            | Semantic-release using this repository's config or your own |
 | [source-protection](/.github/workflows/source-protection.yml) | Check commits for credentials and commit conventions | Gitleaks, STACS & CommitLint                                |
 | [node-tests](/.github/workflows/node-tests.yml)               | Test NodeJS project for functionality & quality      | ESLint, njsscan(SAST) and Unit Tests                        |
-| go-tests                                                      | Coming Soon                                          | Coming Soon                                                 |
+| [go-tests](/.github/workflows/go-tests.yml)                   | Test Go project for functionality & quality          | Code Quality, gosec SAST and Unit Tests                     |
 | [java-tests](/.github/workflows/java-tests.yml)               | Test Java Maven project for functionality & quality  | Code Quality, Polaris SAST and Unit Tests                   |
 | deploy-cloud-run                                              | Coming Soon                                          | Coming Soon                                                 |
 | deploy-cloud-function                                         | Coming Soon                                          | Coming Soon                                                 |
