@@ -1,0 +1,165 @@
+name: Go Tests
+
+# TODO
+# Docs
+# Project Tests
+# switch to main branch again
+
+on:
+  workflow_call:
+    inputs:
+      # <--------------- GENERAL GO OPTIONS ---------------->
+      # Currently the setup-go@v2 action is not compatible with reusable workflows. For now we restrict to Githubs own provided
+      # versions. Follow https://github.com/actions/setup-go/issues/182 for future updates
+      # go-version:
+      #   required: false
+      #   type: string
+      #   description: "Select the version of go to use. Accepts https://github.com/npm/node-semver"
+      #   default: "^1.17"
+      go-env-vars:
+        required: false
+        type: string
+        description: "Export your own environment variables if required (space-seperated)"
+        default: "GO111MODULE=on"
+      # <------------- CODE CLIMATE OPTIONS -------------->
+      cc-default-config:
+        required: false
+        type: boolean
+        description: "Set to false if you want to use your own .codeclimate.yml config"
+        default: true
+      cc-config-file:
+        required: false
+        type: string
+        description: "Set relative path to your own code climate configuration"
+        default: '.codeclimate.yml'
+      cc-info-threshold:
+        required: false
+        type: string
+        description: "Max number of INFO Code Climate findings allowed"
+        default: 0
+      cc-minor-threshold:
+        required: false
+        type: string
+        description: "Max number of MINOR Code Climate findings allowed"
+        default: 0
+      cc-major-threshold:
+        required: false
+        type: string
+        description: "Max number of MAJOR Code Climate findings allowed"
+        default: 0
+      cc-critical-threshold:
+        required: false
+        type: string
+        description: "Max number of CRITICAL Code Climate findings allowed"
+        default: 0
+      cc-blocker-threshold:
+        required: false
+        type: string
+        description: "Max number of BLOCKER Code Climate findings allowed"
+        default: 0
+      # <-------------- GOSEC (SAST) OPTIONS --------------->
+      gosec-default-config:
+        required: false
+        type: boolean
+        description: "Set to false if you want to use your own .gosec-config.json"
+        default: true
+      gosec-scan-path:
+        required: false
+        type: string
+        description: "Set a custom path to scan if required (default = ./...)"
+        default: "./..."
+      # <---------------- UNIT TEST OPTIONS ---------------->
+      unit-test-path:
+        required: false
+        type: string
+        description: "Set a custom path for the go test command if required (default = ./...)"
+        default: "./..."
+
+jobs:
+  # <------------------- CODE QUALITY -------------------->
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Configuration
+        if: ${{ inputs.cc-default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L --fail -o .codeclimate.yml https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.go-codeclimate.yml || exit 1
+
+      - name: Code Climate Standalone
+        uses: erzz/codeclimate-standalone@v0.0.3
+        with:
+          html_report: true
+          config_file: ${{ inputs.cc-config-file }}
+          info_threshold: ${{ inputs.cc-info-threshold }}
+          minor_threshold: ${{ inputs.cc-minor-threshold }}
+          major_threshold: ${{ inputs.cc-major-threshold }}
+          critical_threshold: ${{ inputs.cc-critical-threshold }}
+          blocker_threshold: ${{ inputs.cc-blocker-threshold }}
+
+      - name: Upload Code Climate Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Code Climate Reports
+          path: |
+            codeclimate-report.json
+            codeclimate-report.html
+
+  # <------------------- SAST GOSEC ---------------------->
+  gosec:
+    name: GoSec SAST
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Configuration
+        if: ${{ inputs.gosec-default-config }}
+        run: |
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L --fail -o .gosec-config.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.gosec-config.json || exit 1
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: "-fmt html -out gosec-report.html -stdout -verbose=text -conf .gosec-config.json ${{ inputs.gosec-scan-path }}"
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: GoSec Report
+          path: gosec-report.html
+
+  # <------------------- UNIT TESTS ---------------------->
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: go get -u github.com/vakenbolt/go-test-report
+
+      - name: Run Unit Tests
+        run: go test -v -json -coverprofile=coverage.out ${{ inputs.unit-test-path }} | /home/runner/go/bin/go-test-report -o test-report.html -t "${{ github.event.repository.name }} / ${{ github.ref }}" -s 256 
+
+      - name: Create Coverage HTML Report
+        run: go tool cover -html=coverage.out -o code-coverage.html
+
+      - name: Upload Unit Test Reports
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Unit Test Reports
+          if-no-files-found: error
+          path: |
+            coverage.out
+            test-report.html
+            code-coverage.html

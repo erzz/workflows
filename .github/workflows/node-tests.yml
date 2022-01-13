@@ -1,8 +1,5 @@
 name: NodeJS Tests
 
-# TODO
-# Docs
-
 on:
   workflow_call:
     inputs:
