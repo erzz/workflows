@@ -106,7 +106,7 @@ on:
       # <----------------- SA KEY AUTH ------------------->
       service-account-key:
         required: false
-        description: "The service account key to use for authentication.ß"
+        description: "The service account key to use for authentication"
       # <------------------ MAVEN AUTH ------------------->
       mvn-settings-file:
         required: false
