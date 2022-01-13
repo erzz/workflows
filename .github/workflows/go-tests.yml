@@ -69,11 +69,33 @@ on:
         description: "Set a custom path to scan if required (default = ./...)"
         default: "./..."
       # <---------------- UNIT TEST OPTIONS ---------------->
+      gcp-sa-auth:
+        required: false
+        type: boolean
+        description: "If GCP authentication using a service account JSON key is required for any test set to true"
+        default: false
+      gcp-oidc-auth:
+        required: false
+        type: boolean
+        description: "If GCP authentication using OIDC is required for any test set to true"
+        default: false
       unit-test-path:
         required: false
         type: string
         description: "Set a custom path for the go test command if required (default = ./...)"
         default: "./..."
+    secrets:
+      # <------------------ OIDC AUTH -------------------->
+      wip:
+        required: false
+        description: "The workfload identity provider to use for OIDC auth"
+      service-account:
+        required: false
+        description: "The service account to impersonate when using OIDC auth"
+      # <----------------- SA KEY AUTH ------------------->
+      service-account-key:
+        required: false
+        description: "The service account key to use for authentication."
 
 jobs:
   # <------------------- CODE QUALITY -------------------->
@@ -143,6 +165,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Authenticate to GCP (SA Key)
+        if: ${{ inputs.gcp-sa-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.service-account-key }}
+
+      - name: Authenticate to GCP (OIDC)
+        if: ${{ inputs.gcp-oidc-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
 
       - name: Install Dependencies
         run: go get -u github.com/vakenbolt/go-test-report
