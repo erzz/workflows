@@ -24,7 +24,13 @@ In general it will run your Unit (`go test`), gosec (SAST) and Code Quality test
 
 flowchart LR
   subgraph Pre-Requisites
-    none>"None at \n this time"]
+    subgraph Mandatory
+      None
+    end
+    subgraph Optional
+      gcp-sa>"GCP Service Account\nJSON Key (Secret)"]
+      gcp-oidc>"GCP Identity Provider +\nService Account\n(Secret)"]
+    end
   end
   subgraph Jobs
     code-quality{"Code Climate"}
@@ -46,9 +52,8 @@ flowchart LR
   end
 
   %% dependencies -> Jobs
-  none-.->code-quality
-  none-.->sast
-  none-.->unit-tests
+  gcp-sa-.->unit-tests
+  gcp-oidc-.->unit-tests
   
   %% Jobs -> Artifacts
   code-quality-->cc-html
