@@ -68,6 +68,11 @@ on:
         type: string
         description: "Set a custom path to scan if required (default = ./...)"
         default: "./..."
+      gosec-extra-flags:
+        required: false
+        type: string
+        description: "Pass any extra gosec flags here such as -exclude=G104"
+        default: ""
       # <---------------- UNIT TEST OPTIONS ---------------->
       gcp-sa-auth:
         required: false
@@ -149,7 +154,7 @@ jobs:
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:
-          args: "-fmt html -out gosec-report.html -stdout -verbose=text -conf .gosec-config.json ${{ inputs.gosec-scan-path }}"
+          args: "-fmt html -out gosec-report.html -stdout -verbose=text -conf .gosec-config.json ${{ inputs.gosec-extra-flags }} ${{ inputs.gosec-scan-path }}"
 
       - name: Upload Report
         uses: actions/upload-artifact@v2
