@@ -32,6 +32,7 @@ flowchart LR
     end
     subgraph Optional
       npm-token>"NPM_TOKEN\n(Secret)"]
+      njs-conf>".njsscan"]
     end
   end
   subgraph Jobs
@@ -58,6 +59,7 @@ flowchart LR
   jest-package-->unit-tests
   npm-token-.->code-quality
   npm-token-.->unit-tests
+  njs-conf-.->sast
   
   %% Jobs -> Artifacts
   code-quality-->es-html
