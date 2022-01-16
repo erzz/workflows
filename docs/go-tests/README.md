@@ -28,14 +28,16 @@ flowchart LR
       None
     end
     subgraph Optional
+      cc-yml>".codeclimate.yml"]
       gcp-sa>"GCP Service Account\nJSON Key (Secret)"]
       gcp-oidc>"GCP Identity Provider +\nService Account\n(Secret)"]
+      gosec-conf>".gosec-config.json"]
     end
   end
   subgraph Jobs
     code-quality{"Code Climate"}
     sast{"gosec"}
-    unit-tests{"Custom\nUnit Tests"}
+    unit-tests{"Unit Tests"}
   end
   subgraph Artifacts
     subgraph Code Quality
@@ -52,8 +54,10 @@ flowchart LR
   end
 
   %% dependencies -> Jobs
+  cc-yml-.->code-quality
   gcp-sa-.->unit-tests
   gcp-oidc-.->unit-tests
+  gosec-conf-.->sast
   
   %% Jobs -> Artifacts
   code-quality-->cc-html
