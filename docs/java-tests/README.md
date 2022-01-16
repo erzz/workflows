@@ -39,18 +39,15 @@ flowchart LR
       mvn-settings>"maven-settings.xml\n(Secret)"]
       gcp-sa>"GCP Service Account\nJSON Key (Secret)"]
       gcp-oidc>"GCP Identity Provider +\nService Account\n(Secret)"]
+      cc-yml>".codeclimate.yml"]
     end
   end
   subgraph Jobs
-    code-quality{"Code Climate\nStandalone"}
     polaris-sast{"Polaris SAST"}
     unit-tests{"Custom\nUnit Tests"}
+    code-quality{"Code Climate\nStandalone"}
   end
   subgraph Artifacts
-    subgraph Code Quality
-      cc-html["codeclimate-report.html"]
-      cc-json["codeclimate-report.json"]
-    end
     subgraph SAST
       report-polaris-json["cli-scan.json"]
       report-polaris-server["Polaris Report\n(Server)"]
@@ -63,6 +60,10 @@ flowchart LR
       jacoco-xml["JaCoCo XML"]
       jacoco-csv["JaCoCo CSV"]
     end
+    subgraph Code Quality
+      cc-html["codeclimate-report.html"]
+      cc-json["codeclimate-report.json"]
+    end
   end
 
   %% dependencies -> Jobs
@@ -72,6 +73,7 @@ flowchart LR
   gcp-sa-.->unit-tests
   gcp-oidc-.->unit-tests
   polaris-->polaris-sast
+  cc-yml-.->code-quality
 
   %% Jobs -> Artifacts
   code-quality-->cc-html
