@@ -125,9 +125,9 @@ Given the nature of this workflow in it's current form, there will be several ma
 
 !> Remember this workflow assumes that OIDC authentication is used between Github and GCP
 
-?> You may wish to call this workflow several times, in the same pipeline, for different environments. See [Advanced Examples](terraform-tests/terraform-tests?id=advanced-examples) for demonstrations of how to achieve this!
+?> You may wish to call this workflow several times, in the same pipeline, for different environments. See [Advanced Examples](terraform-tests/README?id=advanced-examples) for demonstrations of how to achieve this!
 
-?> You may wish to call this workflow `on: push` rather than `on: pull_request`. In which case you will need to disable PR commenting. See [Advanced Examples](terraform-tests/terraform-tests?id=advanced-examples) for demonstrations of how to achieve this!
+?> You may wish to call this workflow `on: push` rather than `on: pull_request`. In which case you will need to disable PR commenting. See [Advanced Examples](terraform-tests/README?id=advanced-examples) for demonstrations of how to achieve this!
 
 The minimum configuration of this workflow for a given terraform environment would look something like:
 
