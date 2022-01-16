@@ -1,0 +1,215 @@
+name: Terraform Tests
+
+# TODO
+# docs
+
+on:
+  workflow_call:
+    inputs:
+      # <--------------- TERRAFORM OPTIONS --------------->
+      path:
+        required: false
+        type: string
+        description: "The path to your terraform configuration"
+        default: "."
+      version:
+        required: false
+        type: string
+        description: "The version of terraform to use"
+        default: "1.0.11"
+      workspace:
+        required: false
+        type: string
+        description: "Name of the workspace to work in"
+        default: ""
+      varfile:
+        required: true
+        type: string
+        description: "The tfvars file to use relative to the path input"
+      vars:
+        required: false
+        type: string
+        description: "Add any extra TF_VAR_ environment variables. This should be valid terraform syntax - like a variable definition file"
+        default: ""
+      # <----------------- TLINT OPTIONS ----------------->
+      tflint-default-config:
+        required: false
+        type: boolean
+        description: "Change to false if you want to use your own .tflint.hcl config"
+        default: true
+      # <---------------- TFSEC OPTIONS ------------------>
+      tfsec-version:
+        required: false
+        type: string
+        description: "The version of tfsec to utilise"
+        default: latest
+      # <-------------- PULL REQUEST OPTIONS ------------->
+      pr-update:
+        required: false
+        type: boolean
+        description: "If you do not wish pull requests to be updated with the plan output, set to false"
+        default: true
+      pr-label:
+        required: false
+        type: string
+        description: "A label for the environment name in the PR comment created by terraform-plan"
+        default: ""
+    secrets:
+      wip:
+        required: true
+        description: "The workload identity provider to use for authentication"
+      service-account:
+        required: true
+        description: "The service account to impersonate via oidc" 
+      state-bucket:
+        required: true
+        description: "Name of the Google Storage bucket where state files are stored"
+      token:
+        required: true
+        description: "Provide a github token with permission to write to pull requests"
+    outputs:
+      changes:
+        description: "Returns 'true' if the plan would apply any changes, 'false' if it wouldn't. (Requires terraform version >= 0.11)"
+        value: ${{ jobs.tf-plan.outputs.changes }}
+      json-plan-path:
+        description: "The path (relative to the Actions workspace) to the generated plan in JSON Output format. (Requires terraform version >= 0.13)"
+        value: ${{ jobs.tf-plan.outputs.json-plan-path }}
+      text-plan-path:
+        description: "The path (relative to the Actions workspace) to the generated plan in human readable format. (Requires terraform version >= 0.13)"
+        value: ${{ jobs.tf-plan.outputs.text-plan-path }}
+jobs:
+  # <------------------ TERRAFORM LINT ------------------->
+  tf-lint:
+    name: Terraform Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0.4.4
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v1
+
+      - name: Get Configuration
+        if: ${{ inputs.tflint-default-config }}
+        run: |
+          echo "${{ github.ref_name }}" # DEBUG
+          echo "Fetching default configuration from erzz/workflows..."
+          curl -L --fail -o .tflint.hcl https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.tflint.hcl || exit 1
+
+      - name: Install Google Plugin
+        run: |
+          cd "$GITHUB_WORKSPACE/${{ inputs.path }}" && \
+          tflint --config=.tflint.hcl --init
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1.3.2
+        with:
+          terraform_version: ${{ inputs.version }}
+
+      - name: Create Workspace
+        uses: dflook/terraform-new-workspace@v1
+        if: inputs.workspace != ''
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        with:
+          path: ${{ inputs.path }}
+          workspace: ${{ inputs.workspace }}
+          backend_config: bucket=${{ secrets.state-bucket }}
+
+      - name: Lint Dev Terraform
+        run: |
+          cd "$GITHUB_WORKSPACE/${{ inputs.path }}"
+          tflint --config=.tflint.hcl --format=compact --module --var-file="$GITHUB_WORKSPACE/${{ inputs.varfile }}"
+
+  # <---------------- TERRAFORM VALIDATE ----------------->
+  tf-validate:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Validate Project
+        uses: dflook/terraform-validate@v1
+        with:
+          path: ${{ inputs.path }}
+
+  # <------------------ TERRAFORM PLAN ------------------->
+  tf-plan:
+    name: Plan Dev
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.token }}
+    outputs:
+      changes: ${{ steps.plan.outputs.changes }}
+      json-plan-path: ${{ steps.plan.outputs.json_plan_path }}
+      text-plan-path: ${{ steps.plan.outputs.text_plan_path }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v0.4.4
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Create Workspace
+        uses: dflook/terraform-new-workspace@v1
+        if: inputs.workspace != ''
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        with:
+          path: ${{ inputs.path }}
+          workspace: ${{ inputs.workspace }}
+          backend_config: bucket=${{ secrets.state-bucket }}
+
+      - name: Plan Environment
+        id: plan
+        uses: dflook/terraform-plan@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        with:
+          add_github_comment: ${{ inputs.pr-update }}
+          label: ${{ inputs.pr-label }}
+          path: ${{ inputs.path }}
+          workspace: ${{ inputs.workspace }}
+          var_file: ${{ inputs.varfile }}
+          variables: ${{ inputs.vars }}
+          backend_config: bucket=${{ secrets.state-bucket }}
+
+  # <---------------------- TFSEC ------------------------>
+  tfsec:
+    name: tfsec Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-pr-commenter-action@v0.1.10
+        with:
+          github_token: ${{ secrets.token }}
+          working_directory: ${{ inputs.path }}
+          tfsec_version: ${{ inputs.tfsec-version }}
+          commenter_version: latest
