@@ -22,3 +22,6 @@
 
 - [**Source Protection Workflows**](source-protection/README.md)
   - [Usage](source-protection/source-protection.md)
+
+- [**Terraform Tests Workflows**](terraform-tests/README.md)
+

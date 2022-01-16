@@ -10,26 +10,26 @@ on:
       path:
         required: false
         type: string
-        description: "The path to your terraform configuration"
+        description: "The path to your terraform configuration files (relative to the project root)"
         default: "."
       version:
         required: false
         type: string
-        description: "The version of terraform to use"
+        description: "The version of terraform to utilise in the jobs"
         default: "1.0.11"
       workspace:
-        required: false
+        required: true
         type: string
-        description: "Name of the workspace to work in"
+        description: "Name of the terraform workspace to work in (will be created if doesn't exist)"
         default: ""
       varfile:
         required: true
         type: string
-        description: "The tfvars file to use relative to the path input"
+        description: "The path to the .tfvars file to use (relative to the project root)"
       vars:
         required: false
         type: string
-        description: "Add any extra TF_VAR_ environment variables. This should be valid terraform syntax - like a variable definition file"
+        description: "Add any additional or dynamice terraform variables. This should be valid terraform syntax - like a variable definition file"
         default: ""
       # <----------------- TLINT OPTIONS ----------------->
       tflint-default-config:
@@ -52,7 +52,7 @@ on:
       pr-label:
         required: false
         type: string
-        description: "A label for the environment name in the PR comment created by terraform-plan"
+        description: "Optional label for the environment name in the PR comment created by terraform-plan"
         default: ""
     secrets:
       wip:
@@ -65,7 +65,7 @@ on:
         required: true
         description: "Name of the Google Storage bucket where state files are stored"
       token:
-        required: true
+        required: false
         description: "Provide a github token with permission to write to pull requests"
     outputs:
       changes:
@@ -197,6 +197,13 @@ jobs:
           var_file: ${{ inputs.varfile }}
           variables: ${{ inputs.vars }}
           backend_config: bucket=${{ secrets.state-bucket }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.workspace }} Plan
+          path: |
+            ${{ steps.plan.outputs.json_plan_path }}
+            ${{ steps.plan.outputs.text_plan_path }}
 
   # <---------------------- TFSEC ------------------------>
   tfsec:
