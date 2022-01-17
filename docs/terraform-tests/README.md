@@ -259,7 +259,7 @@ jobs:
       workspace: my-workspace                          # terraform workspace to use
       varfile: terraform/environments/staging.tfvars   # relative to your project root
     secrets:
-      token: ${{ secrets.RPIM_BOT_PAT }}               # Used to post plan to PR
+      token: ${{ secrets.SOME_GITHUB_PAT }}            # Used to post plan to PR
       state-bucket: ${{ secrets.DEV_TF_STATE_BUCKET }} # The GCS bucket used as terraform state backend
       # Required for OIDC
       wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
