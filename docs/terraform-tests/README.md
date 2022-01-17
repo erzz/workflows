@@ -158,12 +158,13 @@ jobs:
 
 ## Secrets
 
-| Input             | Required | Details                                                          |
-| ----------------- | ---------| ---------------------------------------------------------------- |
-| `wip`             | true     | The workload identity provider to use for authentication         |
-| `service-account` | true     | The service account to impersonate via oidc                      |
-| `state-bucket`    | true     | Name of the Google Storage bucket where state files are stored   |
-| `token`           | false    | Provide a github token with permission to write to pull requests |
+| Input             | Required | Details                                                                                   |
+| ----------------- | ---------| ----------------------------------------------------------------------------------------- |
+| `wip`             | true     | The workload identity provider to use for authentication                                  |
+| `service-account` | true     | The service account to impersonate via oidc                                               |
+| `state-bucket`    | true     | Name of the Google Storage bucket where state files are stored                            |
+| `token`           | false    | Provide a github token with permission to write to pull requests                          |
+| `vars`            | false    | Add any additional or dynamic terraform variables. This should be valid terraform syntax |
 
 ## Inputs
 
@@ -173,7 +174,6 @@ jobs:
 | `version`               | false    | `1.0.11`     | The version of terraform to utilise in the jobs                                           |
 | `workspace`             | true     | N/A Required | Name of the terraform workspace to work in (will be created if doesn't exist)             |
 | `varfile`               | true     | N/A Required | The path to the `.tfvars` file to use (relative to the project root)                      |
-| `vars`                  | false    | `""`         | Add any additional or dynamice terraform variables. This should be valid terraform syntax |
 | `tflint-default-config` | false    | `true`       | Change to false if you want to use your own `.tflint.hcl` config                          |
 | `tfsec-version`         | false    | `latest`     | The version of tfsec to utilise                                                           |
 | `pr-update`             | false    | `true`       | If you do not wish pull requests to be updated with the plan output, set to false         |
@@ -230,6 +230,13 @@ jobs:
       path: terraform                                  # relative to your project root
       workspace: my-workspace                          # terraform workspace to use
       varfile: terraform/environments/staging.tfvars   # relative to your project root
+    secrets:
+      token: ${{ secrets.SOME_GITHUB_PAT }}               # Used to post plan to PR
+      state-bucket: ${{ secrets.DEV_TF_STATE_BUCKET }}    # The GCS bucket used as terraform state backend
+      # Required for OIDC
+      wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+      service-account: my-service-account@my-project.iam.gserviceaccount.com
+      # Additional vars are passed as a secret as perhaps contain sensitive values
       vars: |
         cr_image                  = "eu.gcr.io/my-project/${{ github.event.repository.name }}:next-version"
         environment_name          = "${{ github.ref_name }}"
@@ -237,12 +244,6 @@ jobs:
           "datastore" : "roles/datastore.user",
           "cloudrun" : "roles/run.invoker"
         }
-    secrets:
-      token: ${{ secrets.SOME_GITHUB_PAT }}               # Used to post plan to PR
-      state-bucket: ${{ secrets.DEV_TF_STATE_BUCKET }}    # The GCS bucket used as terraform state backend
-      # Required for OIDC
-      wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
-      service-account: my-service-account@my-project.iam.gserviceaccount.com
 ```
 
 ### Multiple environments

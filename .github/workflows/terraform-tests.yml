@@ -26,11 +26,6 @@ on:
         required: true
         type: string
         description: "The path to the .tfvars file to use (relative to the project root)"
-      vars:
-        required: false
-        type: string
-        description: "Add any additional or dynamice terraform variables. This should be valid terraform syntax - like a variable definition file"
-        default: ""
       # <----------------- TLINT OPTIONS ----------------->
       tflint-default-config:
         required: false
@@ -55,12 +50,17 @@ on:
         description: "Optional label for the environment name in the PR comment created by terraform-plan"
         default: ""
     secrets:
+      # <------------------ OIDC SECRETS ----------------->
       wip:
         required: true
         description: "The workload identity provider to use for authentication"
       service-account:
         required: true
-        description: "The service account to impersonate via oidc" 
+        description: "The service account to impersonate via oidc"
+      # <--------------- TERRAFORM SECRETS --------------->
+      vars:
+        required: false
+        description: "Add any additional or dynamice terraform variables. This should be valid terraform syntax - like a variable definition file"
       state-bucket:
         required: true
         description: "Name of the Google Storage bucket where state files are stored"
@@ -150,7 +150,7 @@ jobs:
 
   # <------------------ TERRAFORM PLAN ------------------->
   tf-plan:
-    name: Plan Dev
+    name: Terraform Plan
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.token }}
@@ -195,7 +195,7 @@ jobs:
           path: ${{ inputs.path }}
           workspace: ${{ inputs.workspace }}
           var_file: ${{ inputs.varfile }}
-          variables: ${{ inputs.vars }}
+          variables: ${{ secrets.vars }}
           backend_config: bucket=${{ secrets.state-bucket }}
 
       - uses: actions/upload-artifact@v2
