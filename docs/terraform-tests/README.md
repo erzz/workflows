@@ -4,9 +4,10 @@
 
 This workflow will run a suite of tests plus create a Terraform plan for a given environment.
 
-Though the workflow will work with the vast majority of cases, it is built and tested in a context where the following are true:
+Though several alternative cases will perhaps also work, it is built and tested in a context where the following are true:
 
 - GCP is the target cloud provider
+- GCS is the backend storage type
 - OIDC authentication is utilised
 - Terraform workspaces are used
 
