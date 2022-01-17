@@ -1,3 +1,15 @@
+## [1.6.0](https://github.com/erzz/workflows/compare/v1.5.0...v1.6.0) (2022-01-17)
+
+
+### :sparkles: New Features
+
+* **tf-tests:** add lint, validate, plan and tfsec jobs ([d40b9c4](https://github.com/erzz/workflows/commit/d40b9c4a7b38832a8cb04cb16aa581f9eebfa1c2))
+
+
+### :bug: Bug Fixes
+
+* **tf-plan:** pass vars as secret as may contain secret values ([8997d95](https://github.com/erzz/workflows/commit/8997d9594f3a9a5994fda6c0f20258a88243606e))
+
 ## [1.5.0](https://github.com/erzz/workflows/compare/v1.4.0...v1.5.0) (2022-01-13)
 
 
