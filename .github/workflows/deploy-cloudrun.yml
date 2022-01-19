@@ -1,0 +1,160 @@
+name: Deploy Cloud Run
+
+# TODO
+# docs
+
+on:
+  workflow_call:
+    inputs:
+      # <---------- SELECT AUTHENTICATION METHOD --------->
+      gcp-sa-auth:
+        required: false
+        type: boolean
+        description: "Set to true to enable GCP Service Account Key authentication"
+        default: false
+      gcp-oidc-auth:
+        required: false
+        type: boolean
+        description: "Set to true to enable GCP OIDC authentication"
+        default: false
+      # <--------------- CLOUD RUN OPTIONS --------------->
+      cr-service-name:
+        required: true
+        type: string
+        description: "The name to give to the cloud run service"
+      cr-image:
+        required: true
+        type: string
+        description: "The full registry + container image path to deploy from"
+      cr-region:
+        required: true
+        type: string
+        description: "The GCP region in which to deploy the service"
+        default: ""
+      cr-suffix:
+        required: false
+        type: string
+        description: "The cloud run suffix to apply to the revision name"
+        default: ""
+      cr-flags:
+        required: false
+        type: string
+        description: "Additional cloud run flags to apply during deployment"
+        default: "--port 8080 --cpu 1 --memory 1024Mi --timeout 5m --concurrency 80 --min-instances 0 --max-instances 1 --no-allow-unauthenticated"
+      # <----------- DEPLOYMENT METRICS OPTIONS ---------->
+      metrics:
+        required: false
+        type: boolean
+        description: "To enable the sending of deployment metrics to GCP, set to false"
+        default: false
+      metrics-team:
+        required: false
+        type: string
+        description: "The team name to associate with the deployment"
+        default: ""
+      metrics-service:
+        required: false
+        type: string
+        description: "The name of the service being deployed"
+        default: ${{ github.event.repository.name }}
+      metrics-environment:
+        required: false
+        type: string
+        description: "The name of the environment being deployed to"
+        default: ${{ github.ref_name }}
+      metrics-version:
+        required: false
+        type: string
+        description: "The version to be assigned to the service being deployed"
+        default: ""
+    secrets:
+      # <------------------ OIDC AUTH -------------------->
+      wip:
+        required: false
+        description: "The workfload identity provider to use for OIDC auth"
+      service-account:
+        required: false
+        description: "The service account to impersonate when using OIDC auth"
+      # <----------------- SA KEY AUTH ------------------->
+      service-account-key:
+        required: false
+        description: "The service account key to use for authentication"
+      # <------------------ CLOUD RUN -------------------->
+      cr-project-id:
+        required: true
+        description: "The GCP project to deploy in"
+      cr-env-vars:
+        required: false
+        description: "Comma seperated list of KEY=value environment variables for the cloud run deployment to use"
+      # <----------------- METRICS AUTH ------------------>
+      metrics-gcp-project:
+        required: false
+        description: "The GCP project to which deployment metrics should be sent"
+      metrics-sa-key:
+        required: false
+        description: "A service account key with role monitoring.admin in the metrics-gcp-project"
+    outputs:
+      url:
+        description: "The URL of the deployed Cloud Run service"
+        value: ${{ jobs.deploy.outputs.url }}
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    environment:
+      name: ${{ inputs.cr-service-name }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Notify Deployment Start
+        uses: erzz/google-dep-metrics@v1.0.1
+        if: ${{ inputs.metrics }}
+        with:
+          google-cloud-project: ${{ secrets.metrics-gcp-project }}
+          service-account-keyfile: ${{ secrets.metrics-sa-key }}
+          team: ${{ inputs.metrics-team }}
+          service: ${{ inputs.metrics-service }}
+          environment: ${{ inputs.metrics-environment }}
+          version: ${{ inputs.metrics-version }}
+          status: started
+          result: pending
+
+      - name: Authenticate to GCP (SA Key)
+        if: ${{ inputs.gcp-sa-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.service-account-key }}
+
+      - name: Authenticate to GCP (OIDC)
+        if: ${{ inputs.gcp-oidc-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@main
+        with:
+          project_id: ${{ secrets.cr-project-id }}
+          service: ${{ inputs.cr-service-name }}
+          image: ${{ inputs.cr-image }}
+          region: ${{ inputs.cr-region }}
+          suffix: ${{ inputs.cr-suffix }}
+          env_vars: ${{ secrets.cr-env-vars }}
+          flags: ${{ inputs.cr-flags }}
+
+      - name: Notify Deployment Result
+        uses: erzz/google-dep-metrics@v1.0.1
+        if: ${{ inputs.metrics && steps.deploy.outcome }}
+        with:
+          google-cloud-project: ${{ secrets.metrics-gcp-project }}
+          service-account-keyfile: ${{ secrets.metrics-sa-key }}
+          team: ${{ inputs.metrics-team }}
+          service: ${{ inputs.metrics-service }}
+          environment: ${{ inputs.metrics-environment }}
+          version: ${{ inputs.metrics-version }}
+          status: finished
+          result: ${{ steps.deploy.outcome }}
