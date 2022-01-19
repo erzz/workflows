@@ -19,9 +19,10 @@ on:
         default: false
       # <--------------- CLOUD RUN OPTIONS --------------->
       cr-service-name:
-        required: true
+        required: false
         type: string
         description: "The name to give to the cloud run service"
+        default: ${{ github.event.repository.name }}
       cr-image:
         required: true
         type: string
@@ -82,7 +83,7 @@ on:
       # <------------------ CLOUD RUN -------------------->
       cr-project-id:
         required: true
-        description: "The GCP project to deploy in"
+        description: "The GCP project in which to deploy your Cloud Run service"
       cr-env-vars:
         required: false
         description: "Comma seperated list of KEY=value environment variables for the cloud run deployment to use"
