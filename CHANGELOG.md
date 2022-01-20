@@ -1,3 +1,16 @@
+## [1.7.0](https://github.com/erzz/workflows/compare/v1.6.0...v1.7.0) (2022-01-20)
+
+
+### :package: Maintenance
+
+* **deps:** update stacscan/stacs-ci action to v0.1.5 ([2be4bf2](https://github.com/erzz/workflows/commit/2be4bf2adfb1552ec996dad6df1ae3cb5a2773a2))
+
+
+### :sparkles: New Features
+
+* add Cloud Run deployment with optional deployment metrics ([dfaf8c3](https://github.com/erzz/workflows/commit/dfaf8c3b6557402b911ce388dfb42e5342835f3c))
+* add delete cloud run service workflow ([0d1e58d](https://github.com/erzz/workflows/commit/0d1e58d765933c282da4db0aaaa25b3d3ad709dc))
+
 ## [1.6.0](https://github.com/erzz/workflows/compare/v1.5.0...v1.6.0) (2022-01-17)
 
 
