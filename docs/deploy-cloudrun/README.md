@@ -95,6 +95,7 @@ The simplest scenario would produce the following deployment:
 - Deployed in Region europe-west3
 - 1 CPU, 1Gb RAM, Port 8080, Scale to zero, max 1 instance, timeout 5m and no unauthenticated access
 - No deployment metrics
+- A github environment created and named after the branch
 
 ```yaml
 deploy:
@@ -192,6 +193,7 @@ deploy:
 | `cr-region`           | true     | N/A - Required                                                                                                                     | Set relative path to your own code climate configuration if `cc-default-config`=`false` |
 | `cr-suffix`           | false    | `""`                                                                                                                               | Max number of INFO Code Climate findings allowed before forcing a failed result         |
 | `cr-flags`            | false    | `--port 8080 --cpu 1 --memory 1024Mi --timeout 5m --concurrency 80 --min-instances 0 --max-instances 1 --no-allow-unauthenticated` | Additional cloud run flags to apply during deployment                                   |
+| `gh-env-name`         | false    | `${{ github.ref_name }}`                                                                                                           | The name to give to the environment created in Github                                   |
 | `metrics`             | false    | `false`                                                                                                                            | Max number of MAJOR Code Climate findings allowed before forcing a failed result        |
 | `metrics-team`        | false    | `""`                                                                                                                               | Max number of CRITICAL Code Climate findings allowed before forcing a failed result     |
 | `metrics-service`     | false    | `${{ github.event.repository.name }}`                                                                                              | Max number of BLOCKER Code Climate findings allowed before forcing a failed result      |

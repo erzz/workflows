@@ -1,0 +1,107 @@
+name: Delete Cloud Run
+
+# TODO
+# docs
+
+on:
+  workflow_call:
+    inputs:
+      # <---------- SELECT AUTHENTICATION METHOD --------->
+      gcp-sa-auth:
+        required: false
+        type: boolean
+        description: "Set to true to enable GCP Service Account Key authentication"
+        default: false
+      gcp-oidc-auth:
+        required: false
+        type: boolean
+        description: "Set to true to enable GCP OIDC authentication"
+        default: false
+      # <--------------- CLOUD RUN OPTIONS --------------->
+      cr-service-name:
+        required: true
+        type: string
+        description: "The name of the cloud run service to delete"
+      cr-region:
+        required: true
+        type: string
+        description: "The GCP region in which to delete the service"
+      # <-------------------- GENERAL -------------------->
+      fail-job:
+        required: false
+        type: "string"
+        description: "The exit code to use if service to delete is not found. Setting 1 will produce a job failure."
+        default: 0
+      # <------------------ GITHUB ENV ------------------->
+      gh-env-delete:
+        required: false
+        type: boolean
+        description: "Should the job also attempt to delete the associated environment in Github"
+        default: true
+      gh-env-name:
+        required: false
+        type: string
+        description: "The name of the github environment to delete if gh-env-delete is enabled"
+    secrets:
+      # <------------------ OIDC AUTH -------------------->
+      wip:
+        required: false
+        description: "The workfload identity provider to use for OIDC auth"
+      service-account:
+        required: false
+        description: "The service account to impersonate when using OIDC auth"
+      # <----------------- SA KEY AUTH ------------------->
+      service-account-key:
+        required: false
+        description: "The service account key to use for authentication"
+      # <------------------ CLOUD RUN -------------------->
+      cr-project-id:
+        required: true
+        description: "The GCP project in which to deploy your Cloud Run service"
+      # <----------------- GITHUB AUTH ------------------->
+      token:
+        required: false
+        description: "The Github token to use for github environment deletion if gh-env-delete is enabled."
+
+jobs:
+  delete:
+    # <------------- DELETE CLOUDRUN SERVICE ------------->
+    name: Delete Cloud Run Service
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to GCP (SA Key)
+        if: ${{ inputs.gcp-sa-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.service-account-key }}
+
+      - name: Authenticate to GCP (OIDC)
+        if: ${{ inputs.gcp-oidc-auth }}
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.wip }}
+          service_account: ${{ secrets.service-account }}
+
+      - name: Delete Service
+        run: |
+          if gcloud run services describe --platform managed ${{ inputs.cr-service-name }} --region ${{ inputs.cr-region }} --project ${{ secrets.cr-project-id }}; then
+            gcloud run services delete --quiet --platform managed ${{ inputs.cr-service-name }} --region ${{ inputs.cr-region }} --project ${{ secrets.cr-project-id }} && \
+            echo "Cloud Run service ${{ inputs.cr-service-name }} in ${{ inputs.cr-region }} was successfully deleted from ${{ secrets.cr-project-id }}."
+          else
+            echo "SERVICE: ${{ env.SERVICE_NAME }} could not be found in ${{ inputs.cr-region }} for ${{ secrets.cr-project-id }}" && exit ${{ inputs.fail-job }}
+          fi
+
+  # <------------- DELETE GITHUB ENVIRONMENT ------------->
+  delete-gh-env:
+    name: Delete Github Environment
+    runs-on: ubuntu-latest
+    if: ${{ inputs.gh-env-delete }}
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - uses: strumwolf/delete-deployment-environment@v2
+        with:
+          token: ${{ secrets.token }}
+          environment: ${{ inputs.gh-env-name }}
+        continue-on-error: true

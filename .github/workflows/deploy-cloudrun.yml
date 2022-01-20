@@ -1,8 +1,5 @@
 name: Deploy Cloud Run
 
-# TODO
-# docs
-
 on:
   workflow_call:
     inputs:
@@ -42,6 +39,12 @@ on:
         type: string
         description: "Additional cloud run flags to apply during deployment"
         default: "--port 8080 --cpu 1 --memory 1024Mi --timeout 5m --concurrency 80 --min-instances 0 --max-instances 1 --no-allow-unauthenticated"
+       # <---------- GITHUB ENVIRONMENT OPTIONS ---------->
+      gh-env-name:
+        required: false
+        type: string
+        description: "The name to give to the environment created in Github"
+        default: ${{ github.ref_name }}
       # <----------- DEPLOYMENT METRICS OPTIONS ---------->
       metrics:
         required: false
@@ -106,7 +109,7 @@ jobs:
     outputs:
       url: ${{ steps.deploy.outputs.url }}
     environment:
-      name: ${{ inputs.cr-service-name }}
+      name: ${{ inputs.gh-env-name }}
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Notify Deployment Start
