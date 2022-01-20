@@ -106,9 +106,9 @@ jobs:
     uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
     with:
       gcp-sa-auth: true
-      cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
+      cr-service-name: ${{ github.event.ref }}-${{ github.event.repository.name }}
       cr-region: europe-north1
-      gh-env-name: test-branch1
+      gh-env-name: ${{ github.event.ref }}
     secrets:
       service-account-key: ${{ secrets.DEV_GCP_DEPLOY_SA }}
       cr-project-id: my-gcp-project
@@ -152,7 +152,7 @@ delete:
   uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
   with:
     gcp-oidc-auth: true
-    cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
+    cr-service-name: ${{ github.event.ref }}-${{ github.event.repository.name }}
     cr-region: europe-north1
     gh-env-delete: false
   secrets:
@@ -170,9 +170,9 @@ delete:
   uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
   with:
     gcp-oidc-auth: true
-    cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
+    cr-service-name: ${{ github.event.ref }}-${{ github.event.repository.name }}
     cr-region: europe-north1
-    gh-env-name: test-branch1
+    gh-env-name: ${{ github.event.ref }}
     fail-job: 1
   secrets:
     wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
