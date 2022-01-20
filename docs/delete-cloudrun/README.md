@@ -62,23 +62,32 @@ Simple job that removes any environment by name from the Github UI.
 
 !> You must select a type of authentication using either `gcp-sa-auth: true` or `gcp-oidc-auth: true`
 
+As the most likely case for using this job is in the event of a branch being deleted, that is the case demonstrated here.
+
 ### Basic (OIDC Authentication)
 
 Essentially the job just needs authentication plus the name & region of the service. 
 
 ```yaml
-delete:
-  uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
-  with:
-    gcp-oidc-auth: true
-    cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
-    cr-region: europe-north1
-    gh-env-name: test-branch1
-  secrets:
-    wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
-    service-account: my-service-account@my-project.iam.gserviceaccount.com
-    cr-project-id: my-gcp-project
-    token: ${{ secrets.GITHUB_PAT }}
+name: Cleanup Feature Branch
+on:
+  delete:
+    branches-ignore:
+      - main
+      - master
+jobs:
+  delete:
+    uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
+    with:
+      gcp-oidc-auth: true
+      cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
+      cr-region: europe-north1
+      gh-env-name: test-branch1
+    secrets:
+      wip: projects/012345678901/locations/global/workloadIdentityPools/github/providers/github
+      service-account: my-service-account@my-project.iam.gserviceaccount.com
+      cr-project-id: my-gcp-project
+      token: ${{ secrets.GITHUB_PAT }}
 ```
 
 ### Basic (SA Key Authentication)
@@ -86,17 +95,24 @@ delete:
 If using SA Key authentication then replace `gcp-oidc-auth: true` with `gcp-sa-auth: true` and provide the service account's JSON key as a secret
 
 ```yaml
-delete:
-  uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
-  with:
-    gcp-sa-auth: true
-    cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
-    cr-region: europe-north1
-    gh-env-name: test-branch1
-  secrets:
-    service-account-key: ${{ secrets.DEV_GCP_DEPLOY_SA }}
-    cr-project-id: my-gcp-project
-    token: ${{ secrets.GITHUB_PAT }}
+name: Cleanup Feature Branch
+on:
+  delete:
+    branches-ignore:
+      - main
+      - master
+jobs:
+  delete:
+    uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
+    with:
+      gcp-sa-auth: true
+      cr-service-name: ${{ github.ref_name }}-${{ github.event.repository.name }}
+      cr-region: europe-north1
+      gh-env-name: test-branch1
+    secrets:
+      service-account-key: ${{ secrets.DEV_GCP_DEPLOY_SA }}
+      cr-project-id: my-gcp-project
+      token: ${{ secrets.GITHUB_PAT }}
 ```
 
 ## Secrets
@@ -129,6 +145,8 @@ None at this time
 
 ### Without Github Environment deletion
 
+Simply add `inputs.gh-env-delete: false` and there is no need to provide `secrets.token` as it's no longer required
+
 ```yaml
 delete:
   uses: erzz/workflows/.github/workflows/delete-cloudrun.yml@main
@@ -144,6 +162,8 @@ delete:
 ```
 
 ### Fail if service not found
+
+Set the exit code of the job in the event of failure by adding `fail-job: 1` or any other value of your choice
 
 ```yaml
 delete:
