@@ -68,6 +68,7 @@ jobs:
     # <------------- DELETE CLOUDRUN SERVICE ------------->
     name: Delete Cloud Run Service
     runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch'
     steps:
       - name: Authenticate to GCP (SA Key)
         if: ${{ inputs.gcp-sa-auth }}
@@ -95,7 +96,7 @@ jobs:
   delete-gh-env:
     name: Delete Github Environment
     runs-on: ubuntu-latest
-    if: ${{ inputs.gh-env-delete }}
+    if: ${{ inputs.gh-env-delete && github.event.ref_type == 'branch'}}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
