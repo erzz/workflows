@@ -192,7 +192,10 @@ As there are many potential inputs they are broken up into separate groups here 
 
 ## Outputs
 
-None
+| Output      | Description                                                   | Example value   |
+| ----------- | ------------------------------------------------------------- | --------------- |
+| `short-sha` | Captures the short SHA for use in this or later workflow jobs | `cb26122`       |
+| `ref-slug`  | A URL sanitized version of the github ref                     | `bug-mybranch1` |
 
 ## Advanced Examples
 

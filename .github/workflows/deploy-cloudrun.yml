@@ -101,6 +101,12 @@ on:
       url:
         description: "The URL of the deployed Cloud Run service"
         value: ${{ jobs.deploy.outputs.url }}
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.deploy.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.deploy.outputs.short-sha }}
 
 jobs:
   deploy:
@@ -108,10 +114,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       url: ${{ steps.deploy.outputs.url }}
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     environment:
       name: ${{ inputs.gh-env-name }}
       url: ${{ steps.deploy.outputs.url }}
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
+
       - name: Notify Deployment Start
         uses: erzz/google-dep-metrics@v1.0.1
         if: ${{ inputs.metrics }}

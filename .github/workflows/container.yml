@@ -68,9 +68,12 @@ on:
       image-tag:
         description: "The image tag applied to the built image"
         value: ${{ jobs.build-image.outputs.image-tag }}
-      branch:
-        description: "The branch name for which the workflow ran"
-        value: ${{ jobs.build-image.outputs.branch }}
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.build-image.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.build-image.outputs.short-sha }}
 
 jobs:
   # <--------------------- SOURCE-ONLY ------------------->
@@ -80,7 +83,8 @@ jobs:
     outputs:
       image-name: ${{ steps.build-image.outputs.imageFullName }}
       image-tag: ${{ steps.build-image.outputs.tags }}
-      branch: ${{ env.GITHUB_REF_SLUG_URL }}
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2

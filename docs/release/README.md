@@ -97,11 +97,13 @@ jobs:
 
 ## Outputs
 
-| Output                | Description                                                | Example value                          |
-| --------------------- | ---------------------------------------------------------- | -------------------------------------- |
-| new_release_published | Returns true if a release was created                      | `true`                                 |
-| new_release_version   | The version given to the release if created                | `v1.2.0`                               |
-| new_release_notes     | The contents of the release notes if a release was created | The full markdown of the release notes |
+| Output                | Description                                                   | Example value                          |
+| --------------------- | ------------------------------------------------------------- | -------------------------------------- |
+| new_release_published | Returns true if a release was created                         | `true`                                 |
+| new_release_version   | The version given to the release if created                   | `v1.2.0`                               |
+| new_release_notes     | The contents of the release notes if a release was created    | The full markdown of the release notes |
+| `short-sha`           | Captures the short SHA for use in this or later workflow jobs | `cb26122`                              |
+| `ref-slug`            | A URL sanitized version of the github ref                     | `bug-mybranch1`                        |
 
 ## Advanced Examples
 

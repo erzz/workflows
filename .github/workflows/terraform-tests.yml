@@ -77,11 +77,21 @@ on:
       text-plan-path:
         description: "The path (relative to the Actions workspace) to the generated plan in human readable format. (Requires terraform version >= 0.13)"
         value: ${{ jobs.tf-plan.outputs.text-plan-path }}
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.tf-lint.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.tf-lint.outputs.short-sha }}
+
 jobs:
   # <------------------ TERRAFORM LINT ------------------->
   tf-lint:
     name: Terraform Lint
     runs-on: ubuntu-latest
+    outputs:
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2

@@ -52,18 +52,31 @@ on:
       npm-token:
         required: false
         description: "If needing to authenticate with your NPM repository, provide the token which will be exposed as NPM_TOKEN"
+    outputs:
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.eslint.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.eslint.outputs.short-sha }}
 
 jobs:
   # <---------------------- ES LINT ---------------------->
   eslint:
     name: ES Lint
     runs-on: ubuntu-latest
+    outputs:
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     if: ${{ inputs.eslint-enable }}
     env:
       NPM_TOKEN: ${{ secrets.npm-token }}
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
 
       - name: Setup NodeJS
         uses: actions/setup-node@v2

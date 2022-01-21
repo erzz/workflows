@@ -101,15 +101,28 @@ on:
       service-account-key:
         required: false
         description: "The service account key to use for authentication."
+    outputs:
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.code-quality.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.code-quality.outputs.short-sha }}
 
 jobs:
   # <------------------- CODE QUALITY -------------------->
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    outputs:
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
 
       - name: Get Configuration
         if: ${{ inputs.cc-default-config }}
