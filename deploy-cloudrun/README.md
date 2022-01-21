@@ -202,9 +202,11 @@ deploy:
 
 ## Outputs
 
-| Output | Description                          | Example value                                   |
-| ------ | ------------------------------------ | ----------------------------------------------- |
-| `url`  | The full URL to the deployed service | `https://my-service-abcdefghijkl-lz.a.run.app/` |
+| Output      | Description                                                   | Example value                                   |
+| ----------- | ------------------------------------------------------------- | ----------------------------------------------- |
+| `short-sha` | Captures the short SHA for use in this or later workflow jobs | `cb26122`                                       |
+| `ref-slug`  | A URL sanitized version of the github ref                     | `bug-mybranch1`                                 |
+| `url`       | The full URL to the deployed service                          | `https://my-service-abcdefghijkl-lz.a.run.app/` |
 
 ## Advanced Examples
 

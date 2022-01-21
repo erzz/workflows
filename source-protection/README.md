@@ -86,7 +86,9 @@ source-protection:
 ```
 ## Secrets
 
-None at this time
+| Output      | Description                                                   | Example value |
+| ----------- | ------------------------------------------------------------- | ------------- |
+| `short-sha` | Captures the short SHA for use in this or later workflow jobs | `cb26122`     |
 
 ## Inputs
 
@@ -107,7 +109,10 @@ in the jobs
 
 ## Outputs
 
-None at this time
+| Output       | Description                                                   | Example value   |
+| ------------ | ------------------------------------------------------------- | --------------- |
+| `short-sha`  | Captures the short SHA for use in this or later workflow jobs | `cb26122`       |
+| `ref-slug`   | A URL sanitized version of the github ref                     | `bug-mybranch1´ |
 
 ## Advanced Examples
 
