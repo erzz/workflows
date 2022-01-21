@@ -34,6 +34,12 @@ on:
       new_release_notes:
         description: "The release notes for the new release"
         value: ${{ jobs.release.outputs.new_release_notes }}
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.release.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.release.outputs.short-sha }}
 
 jobs:
   # <--------------- RUN SEMANTIC RELEASE ---------------->
@@ -44,12 +50,17 @@ jobs:
       new_release_published: ${{ steps.semantic-release.outputs.new_release_published }}
       new_release_version: ${{ steps.semantic-release.outputs.new_release_version }}
       new_release_notes: ${{ steps.semantic-release.outputs.new_release_notes }}
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
 
       - name: Include maven-settings.xml
         if: ${{ inputs.mvn-settings }}

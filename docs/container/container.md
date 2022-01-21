@@ -41,11 +41,12 @@ build:
 
 ## Outputs
 
-| Output       | Description                                     | Example value                 |
-| ------------ | ----------------------------------------------- | ----------------------------- |
-| `image-name` | The full registry and path of the built image   | `eu.gcr.io/my-project/my-app` |
-| `image-tag`  | The image tag applied to the built image        | `main-23f1ac`                 |
-| `branch`     | The branch or tag for which the image was built | `main`                        |
+| Output       | Description                                                   | Example value                 |
+| ------------ | ------------------------------------------------------------- | ----------------------------- |
+| `short-sha`  | Captures the short SHA for use in this or later workflow jobs | `cb26122`                     |
+| `ref-slug`   | A URL sanitized version of the github ref                     | `bug-mybranch1`               |
+| `image-name` | The full registry and path of the built image                 | `eu.gcr.io/my-project/my-app` |
+| `image-tag`  | The image tag applied to the built image                      | `main-23f1a`                  |
 
 ## Advanced Examples
 

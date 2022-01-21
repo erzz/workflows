@@ -181,11 +181,13 @@ jobs:
 
 ## Outputs
 
-| Output           | Description                                                                                  | Example value | Required TF version |
-| ---------------- | -------------------------------------------------------------------------------------------- | --------------| ------------------- |
-| `changes`        | Returns `true` if the plan would apply any changes, 'false' if it wouldn't.                  | `true`        | `>=0.11`            |
-| `json-plan-path` | The path (relative to the Actions workspace) to the generated plan in JSON Output format.    | `plan.json`   | `>=0.13`            |
-| `text-plan-path` | The path (relative to the Actions workspace) to the generated plan in human readable format. | `plan.txt`    | `>=0.13`            |
+| Output           | Description                                                                                  | Example value   | Required TF version |
+| ---------------- | -------------------------------------------------------------------------------------------- | ----------------| ------------------- |
+| `changes`        | Returns `true` if the plan would apply any changes, 'false' if it wouldn't.                  | `true`          | `>=0.11`            |
+| `json-plan-path` | The path (relative to the Actions workspace) to the generated plan in JSON Output format.    | `plan.json`     | `>=0.13`            |
+| `text-plan-path` | The path (relative to the Actions workspace) to the generated plan in human readable format. | `plan.txt`      | `>=0.13`            |
+| `short-sha`      | Captures the short SHA for use in this or later workflow jobs                                | `cb26122`       | N/A                 |
+| `ref-slug`       | A URL sanitized version of the github ref                                                    | `bug-mybranch1´ | N/A                 |
 
 ## Advanced Examples
 

@@ -62,14 +62,29 @@ on:
       token:
         required: false
         description: "The Github token to use for github environment deletion if gh-env-delete is enabled."
-
+    outputs:
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.delete.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.delete.outputs.short-sha }}
 jobs:
   delete:
     # <------------- DELETE CLOUDRUN SERVICE ------------->
     name: Delete Cloud Run Service
     runs-on: ubuntu-latest
     if: github.event.ref_type == 'branch'
+    outputs:
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
+
       - name: Authenticate to GCP (SA Key)
         if: ${{ inputs.gcp-sa-auth }}
         uses: google-github-actions/auth@v0

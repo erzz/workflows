@@ -46,14 +46,28 @@ on:
         type: boolean
         description: "Set to false if you do not want commit lint to fail on warnings"
         default: true
+    outputs:
+      ref-slug:
+        description: "A URL sanitized version of the github ref"
+        value: ${{ jobs.build-image.outputs.ref-slug }}
+      short-sha:
+        description: "Captures the short SHA for use in this or later workflow jobs"
+        value: ${{ jobs.stacs.outputs.short-sha }}
+
 jobs:
   # <-------- STATIC TOKEN & CREDENTIAL SCANNER ---------->
   stacs:
     name: STACS
     runs-on: ubuntu-latest
+    outputs:
+      short-sha: ${{ env.GITHUB_SHA_SHORT }}
+      ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
+
+      - name: Slugify github variables
+        uses: rlespinasse/github-slug-action@v4
 
       - name: STACS CI
         uses: stacscan/stacs-ci@0.1.5
