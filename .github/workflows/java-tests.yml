@@ -133,7 +133,7 @@ jobs:
       ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
@@ -174,7 +174,7 @@ jobs:
       PROJECT_NAME: ${{ inputs.polaris-project-name }}
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
@@ -227,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Authenticate to GCP (SA Key)
         if: ${{ inputs.gcp-sa-auth }}

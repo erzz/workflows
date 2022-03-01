@@ -87,7 +87,7 @@ jobs:
       ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
@@ -128,7 +128,7 @@ jobs:
     if: ${{ inputs.include-tests }}
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v1.6.0
@@ -145,7 +145,7 @@ jobs:
     steps:
       # Checkout required for upload step's git context
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v0
@@ -168,7 +168,7 @@ jobs:
     needs: build-image
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Authenticate to GCP
         id: auth

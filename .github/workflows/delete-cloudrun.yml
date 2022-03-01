@@ -80,7 +80,7 @@ jobs:
       ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
@@ -114,7 +114,7 @@ jobs:
     if: ${{ inputs.gh-env-delete && github.event.ref_type == 'branch'}}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - uses: strumwolf/delete-deployment-environment@v2
         with:

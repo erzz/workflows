@@ -73,7 +73,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.npm-token }}
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
@@ -102,7 +102,7 @@ jobs:
     if: ${{ inputs.njsscan-enable }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get Configuration
         if: ${{ inputs.njsscan-default-config }}
@@ -132,7 +132,7 @@ jobs:
       NPM_TOKEN: ${{ secrets.npm-token }}
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup NodeJS
         uses: actions/setup-node@v2

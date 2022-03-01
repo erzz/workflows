@@ -54,7 +54,7 @@ jobs:
       ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: false
