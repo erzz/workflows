@@ -94,7 +94,7 @@ jobs:
       ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v4
@@ -148,7 +148,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -170,7 +170,7 @@ jobs:
       text-plan-path: ${{ steps.plan.outputs.text_plan_path }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Slugify github variables
         uses: rlespinasse/github-slug-action@v3.x
@@ -221,7 +221,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v0.1.10
