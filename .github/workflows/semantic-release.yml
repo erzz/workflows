@@ -7,30 +7,62 @@ on:
         type: boolean
         description: "To use a config you have in your repository already - set to false. Otherwise uses the config in this respository."
         default: true
+      branches:
+        required: false
+        type: string
+        description: "Use to override branches attribute in the .releaserc.json (used mostly for testing)"
       dry-run:
         required: false
         type: boolean
         description: "Used to only preview the release result and notes for testing. Set to true to enable"
+        default: false
+      create-floating-tag:
+        required: false
+        type: boolean
+        description: "Set to `true` to create an additional floating tag e.g. for release `v1.3.0` also create/move `v1` to the same SHA"
         default: false
       mvn-settings:
         required: false
         type: boolean
         description: "If this is a maven project, set to true and disable default-config"
         default: false
+      npm-artifactory:
+        required: false
+        type: boolean
+        description: "If you need to authenticate with artifactory to publish packages set to `true`"
+        default: false
     secrets:
       token:
         required: true
-        description: "A secret containing a token with relevant permissions to publish releases"
+        description: "A secret containing a Github PAT with relevant permissions to publish releases"
       mvn-settings-file:
         required: false
         description: "If a maven settings file is required for build then add it here"
+      npm-token:
+        required: false
+        description: "If an NPM_TOKEN env var is required for build then add it here"
+      artifactory-user:
+        required: false
+        description: "Username to authenticate with artifactory"
+      artifactory-password:
+        required: false
+        description: "Password or Token to authenticate with artifactory"
     outputs:
       new_release_published:
         description: "Whether a new release was published (true or false)"
         value: ${{ jobs.release.outputs.new_release_published }}
       new_release_version:
-        description: "Version of the new release"
+        description: "Version of the new release e.g. `1.3.0`"
         value: ${{ jobs.release.outputs.new_release_version }}
+      new_release_major_version:
+        description: "Major version of the new release e.g. `1`"
+        value: ${{ jobs.release.outputs.new_release_major_version }}
+      new_release_minor_version:
+        description: "Minor version of the new release e.g. `3`"
+        value: ${{ jobs.release.outputs.new_release_minor_version }}
+      new_release_patch_version:
+        description: "Patch version of the new release e.g. `0`"
+        value: ${{ jobs.release.outputs.new_release_patch_version }}
       new_release_notes:
         description: "The release notes for the new release"
         value: ${{ jobs.release.outputs.new_release_notes }}
@@ -50,17 +82,23 @@ jobs:
       new_release_published: ${{ steps.semantic-release.outputs.new_release_published }}
       new_release_version: ${{ steps.semantic-release.outputs.new_release_version }}
       new_release_notes: ${{ steps.semantic-release.outputs.new_release_notes }}
+      new_release_major_version: ${{ steps.semantic-release.outputs.new_release_major_version }}
+      new_release_minor_version: ${{ steps.semantic-release.outputs.new_release_minor_version }}
+      new_release_patch_version: ${{ steps.semantic-release.outputs.new_release_patch_version }}
       short-sha: ${{ env.GITHUB_SHA_SHORT }}
       ref-slug: ${{ env.GITHUB_REF_SLUG_URL }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: false
 
       - name: Slugify github variables
-        uses: rlespinasse/github-slug-action@v4
+        uses: rlespinasse/github-slug-action@4.2.4
+
+      - name: Export NPM token
+        run: echo "NPM_TOKEN=${{ secrets.npm-token }}" >> $GITHUB_ENV
 
       - name: Include maven-settings.xml
         if: ${{ inputs.mvn-settings }}
@@ -71,21 +109,35 @@ jobs:
           echo "Creating maven-settings.xml..."
           echo "$FILE" > maven-settings.xml
 
+      - name: NPM Auth with Artifactory
+        if: ${{ inputs.npm-artifactory }}
+        run: curl -u ${{ secrets.artifactory-user }}:${{ secrets.artifactory-password }} https://artifactory.build.ingka.ikea.com/artifactory/api/npm/auth >> .npmrc
+
       - name: Get Configuration
         if: ${{ inputs.default-config }}
         run: |
-          echo "Fetching default configuration from erzz/workflows..."
-          curl -L --fail -o .releaserc.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/semantic-release-config.json || exit 1
+          echo "Fetching default configuration from erzz/configs..."
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'Accept: application/vnd.github.v3.raw' \
+            --location https://api.github.com/repos/erzz/configs/contents/configs/semantic-release-config.json \
+            --fail \
+            --output .releaserc.json || exit 1
+          cat .releaserc.json
 
       - name: Get MVN Configuration
         if: ${{ inputs.mvn-settings }}
         run: |
-          echo "Fetching Maven configuration from erzz/workflows..."
-          curl -L --fail -o .releaserc.json https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/semantic-release-config-mvn.json || exit 1
+          echo "Fetching Maven configuration from erzz/configs..."
+          curl --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'Accept: application/vnd.github.v3.raw' \
+            --location https://api.github.com/repos/erzz/configs/contents/configs/semantic-release-config-mvn.json \
+            --fail \
+            --output .releaserc.json || exit 1
+          cat .releaserc.json
 
       - name: Semantic Release
         id: semantic-release
-        uses: cycjimmy/semantic-release-action@v2.7.0
+        uses: cycjimmy/semantic-release-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
         with:
@@ -95,3 +147,53 @@ jobs:
             @semantic-release/git
             conventional-changelog-conventionalcommits
             @semantic-release/exec
+
+  floating-tag:
+    name: Create floating tag
+    needs: release
+    if: ${{ needs.release.outputs.new_release_published == 'true' && inputs.create-floating-tag }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Get Release SHA
+        id: sha
+        run: |
+          SHA=$(git show-ref --hash v${{ needs.release.outputs.new_release_version }})
+          echo "SHA for v${{ needs.release.outputs.new_release_version }}: $SHA"
+          echo "::set-output name=sha::$SHA"
+
+      - name: Create floating tag
+        uses: 'actions/github-script@v6'
+        env:
+          SHA: ${{ steps.sha.outputs.sha }}
+        with:
+          github-token: ${{ secrets.token }}
+          script: |-
+            const sha = process.env.SHA;
+            const major = 'v${{ needs.release.outputs.new_release_major_version }}';
+
+            // If exists then update, else create
+            try {
+              await github.rest.git.updateRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${major}`,
+                sha: sha,
+                force: true,
+              });
+              core.info(`Updated ${major} to ${sha}`);
+            } catch(err) {
+              core.info(`Failed to update ${major}: ${err}`);
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${major}`,
+                sha: sha,
+              });
+              core.info(`Created ${major} at ${sha}`);
+            }
