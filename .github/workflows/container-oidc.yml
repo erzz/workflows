@@ -204,7 +204,7 @@ jobs:
           accept-extensions: pem,key
 
       - name: Upload Report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Dockle Report
