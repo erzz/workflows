@@ -95,7 +95,7 @@ jobs:
           persist-credentials: false
 
       - name: Slugify github variables
-        uses: rlespinasse/github-slug-action@4.2.4
+        uses: rlespinasse/github-slug-action@4.2.5
 
       - name: Export NPM token
         run: echo "NPM_TOKEN=${{ secrets.npm-token }}" >> $GITHUB_ENV
