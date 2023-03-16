@@ -131,7 +131,7 @@ jobs:
           curl -L --fail -o .codeclimate.yml https://raw.githubusercontent.com/erzz/workflows/main/.github/workflows/configs/.go-codeclimate.yml || exit 1
 
       - name: Code Climate Standalone
-        uses: erzz/codeclimate-standalone@v0.0.3
+        uses: erzz/codeclimate-standalone@v0.0.5
         with:
           html_report: true
           config_file: ${{ inputs.cc-config-file }}
