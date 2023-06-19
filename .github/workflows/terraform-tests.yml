@@ -224,7 +224,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: tfsec
-        uses: aquasecurity/tfsec-pr-commenter-action@v0.1.10
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.3.1
         with:
           github_token: ${{ secrets.token }}
           working_directory: ${{ inputs.path }}
