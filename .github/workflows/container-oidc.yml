@@ -196,7 +196,7 @@ jobs:
         run: gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
 
       - name: Run Dockle
-        uses: erzz/dockle-action@v1.1.1
+        uses: erzz/dockle-action@v1.4.0
         with:
           image: ${{ needs.build-image.outputs.image-name }}:${{ needs.build-image.outputs.image-tag }}
           exit-code: 1
