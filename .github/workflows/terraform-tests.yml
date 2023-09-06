@@ -208,7 +208,7 @@ jobs:
           variables: ${{ secrets.vars }}
           backend_config: bucket=${{ secrets.state-bucket }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.workspace }} Plan
           path: |

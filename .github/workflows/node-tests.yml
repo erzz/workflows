@@ -89,7 +89,7 @@ jobs:
           ${{ inputs.eslint.command }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: ES Lint Report
@@ -117,7 +117,7 @@ jobs:
           args: '. --html --output njsscan.html || true'
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: NJS Scan Report
@@ -146,7 +146,7 @@ jobs:
         run: ${{ inputs.unit-test-command }}
 
       - name: Upload Unit Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Unit Test & Coverage Reports

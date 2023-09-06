@@ -142,7 +142,7 @@ jobs:
           blocker_threshold: ${{ inputs.cc-blocker-threshold }}
 
       - name: Upload Code Climate Report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Code Climate Reports
@@ -170,7 +170,7 @@ jobs:
           args: "-fmt html -out gosec-report.html -stdout -verbose=text -conf .gosec-config.json ${{ inputs.gosec-extra-flags }} ${{ inputs.gosec-scan-path }}"
 
       - name: Upload Report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: GoSec Report
@@ -207,7 +207,7 @@ jobs:
         run: go tool cover -html=coverage.out -o code-coverage.html
 
       - name: Upload Unit Test Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Unit Test Reports
