@@ -123,7 +123,7 @@ jobs:
           tflint --config=.tflint.hcl --init
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1.3.2
+        uses: hashicorp/setup-terraform@v1.4.0
         with:
           terraform_version: ${{ inputs.version }}
 
